@@ -1,0 +1,67 @@
+buildscript {
+    ext {
+        springBootVersion = '2.4.1'
+        mapstructVersion = '1.4.1.Final'
+        googleJsr305Version = '3.0.2'
+        hutoolVersion = '5.5.6'
+        swagger2Version = '2.10.5'
+        swaggerAnnotationsVersion = '1.5.20'
+        jpaSpecVersion = '3.2.5'
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'java'
+}
+
+allprojects {
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+
+    group = 'com.silentcloud'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        maven {
+            url 'https://maven.aliyun.com/repository/public'
+        }
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        annotationProcessor platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+        options.compilerArgs = ['-Xlint']
+    }
+}
+
+subprojects {
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        implementation "com.google.code.findbugs:jsr305:${googleJsr305Version}"
+
+
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+}

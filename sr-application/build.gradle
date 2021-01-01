@@ -1,0 +1,21 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    implementation project(':sr-util')
+    implementation project(':sr-model')
+    implementation project(':sr-repository')
+    implementation project(':sr-service-api')
+    implementation project(':sr-service-impl')
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation "io.springfox:springfox-swagger2:${swagger2Version}"
+    implementation "io.springfox:springfox-swagger-ui:${swagger2Version}"
+
+    runtimeOnly 'mysql:mysql-connector-java'
+
+}

@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/spring_rest?characterEncoding=UTF-8&serverTimezone=GMT%2b8&autoReconnect=true&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useSSL=false&connectTimeout=30000000
+    username: sr
+    password: sr123
+    sqlScriptEncoding: UTF-8
+    initialization-mode: never
+  jpa:
+    hibernate:
+      ddl-auto: update
+      use-new-id-generator-mappings: false
+    show-sql: false
+    open-in-view: false
+
+server:
+  port: 8888
+  servlet:
+    context-path: /api/v1
+
+logging:
+  level:
+    org:
+      springframework.web: debug
+      hibernate.SQL: debug

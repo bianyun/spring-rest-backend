@@ -1,0 +1,26 @@
+compileJava {
+    options.compilerArgs = [
+            '-Amapstruct.suppressGeneratorTimestamp=true',
+            '-Amapstruct.suppressGeneratorVersionInfoComment=true',
+            '-Amapstruct.defaultComponentModel=spring',
+            '-Amapstruct.unmappedTargetPolicy=IGNORE',
+    ]
+}
+
+dependencies {
+    implementation project(':sr-util')
+    implementation project(':sr-model')
+    implementation project(':sr-repository')
+    implementation project(':sr-service-api')
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    compileOnly 'com.fasterxml.jackson.core:jackson-annotations'
+
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    testImplementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+    implementation "com.github.wenhao:jpa-spec:${jpaSpecVersion}"
+
+}
