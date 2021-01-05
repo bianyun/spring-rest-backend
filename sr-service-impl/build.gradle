@@ -4,6 +4,8 @@ compileJava {
             '-Amapstruct.suppressGeneratorVersionInfoComment=true',
             '-Amapstruct.defaultComponentModel=spring',
             '-Amapstruct.unmappedTargetPolicy=IGNORE',
+            '-Amapstruct.verbose=false',
+            '-Amapstruct.defaultInjectionStrategy=constructor'
     ]
 }
 

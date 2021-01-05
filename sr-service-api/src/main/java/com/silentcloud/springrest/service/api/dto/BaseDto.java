@@ -1,9 +1,9 @@
 package com.silentcloud.springrest.service.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.silentcloud.springrest.service.ValidationGroups.Create;
-import com.silentcloud.springrest.service.ValidationGroups.Reference;
-import com.silentcloud.springrest.service.ValidationGroups.Update;
+import com.silentcloud.springrest.service.api.dto.ValidationGroups.Create;
+import com.silentcloud.springrest.service.api.dto.ValidationGroups.Reference;
+import com.silentcloud.springrest.service.api.dto.ValidationGroups.Update;
 import com.silentcloud.springrest.util.MiscUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

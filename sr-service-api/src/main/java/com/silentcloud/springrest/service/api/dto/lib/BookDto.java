@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.groups.ConvertGroup;
 import java.util.List;
 
-import static com.silentcloud.springrest.service.ValidationGroups.*;
+import static com.silentcloud.springrest.service.api.dto.ValidationGroups.*;
 
 
 @Data

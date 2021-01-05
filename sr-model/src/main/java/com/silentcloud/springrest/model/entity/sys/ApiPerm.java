@@ -5,11 +5,10 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
@@ -25,6 +24,14 @@ public class ApiPerm extends AbstractPersistable<Long> {
     private String value;
 
     @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ApiPerm parent;
+
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "parent", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<ApiPerm> children = new ArrayList<>();
+
+    @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @ManyToMany(mappedBy = "apiPerms")
     private Set<Menu> menus = new HashSet<>();
@@ -33,4 +40,14 @@ public class ApiPerm extends AbstractPersistable<Long> {
     @ToString.Exclude
     @ManyToMany(mappedBy = "apiPerms")
     private Set<Button> buttons = new HashSet<>();
+
+    public void addChild(ApiPerm child) {
+        children.add(child);
+        child.setParent(this);
+    }
+
+    public void removeChild(ApiPerm child) {
+        children.remove(child);
+        child.setParent(null);
+    }
 }

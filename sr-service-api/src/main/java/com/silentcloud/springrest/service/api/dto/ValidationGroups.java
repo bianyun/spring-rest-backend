@@ -1,4 +1,4 @@
-package com.silentcloud.springrest.service;
+package com.silentcloud.springrest.service.api.dto;
 
 import javax.validation.groups.Default;
 
