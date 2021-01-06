@@ -1,9 +1,5 @@
-plugins {
-    id 'java-library'
-}
 
 dependencies {
-    api project(':sr-common')
-    api "cn.hutool:hutool-all:${hutoolVersion}"
-    api "io.swagger:swagger-annotations:${swaggerAnnotationsVersion}"
+    implementation project(':sr-common')
+    implementation "io.swagger:swagger-annotations:${swaggerAnnotationsVersion}"
 }

@@ -1,6 +1,7 @@
 apply plugin: 'org.springframework.boot'
 
 dependencies {
+    implementation project(':sr-common')
     implementation project(':sr-util')
     implementation project(':sr-model')
     implementation project(':sr-repository')
@@ -12,9 +13,9 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    implementation "io.springfox:springfox-swagger2:${swagger2Version}"
-    implementation "io.springfox:springfox-swagger-ui:${swagger2Version}"
+    implementation "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
 
     runtimeOnly 'mysql:mysql-connector-java'
 

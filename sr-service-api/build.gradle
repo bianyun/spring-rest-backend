@@ -1,7 +1,9 @@
 dependencies {
+    implementation project(':sr-common')
     implementation project(':sr-util')
     implementation project(':sr-model')
-    compileOnly 'javax.validation:validation-api'
+    implementation 'javax.validation:validation-api'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     compileOnly 'com.fasterxml.jackson.core:jackson-annotations'
+    implementation "io.swagger:swagger-annotations:${swaggerAnnotationsVersion}"
 }

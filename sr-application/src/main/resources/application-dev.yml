@@ -24,3 +24,10 @@ logging:
     org:
       springframework.web: debug
       hibernate.SQL: debug
+
+knife4j:
+  enable: true
+  setting:
+    enableSwaggerModels: false
+    enableDocumentManage: false
+    enableOpenApi: false

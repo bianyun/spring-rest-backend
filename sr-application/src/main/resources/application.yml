@@ -6,6 +6,9 @@ spring:
     open-in-view: false
   profiles:
     active: dev
+  jackson:
+    deserialization:
+      READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE: true
 
 server:
   servlet:

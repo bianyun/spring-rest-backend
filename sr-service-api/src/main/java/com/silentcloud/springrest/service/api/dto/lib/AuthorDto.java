@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -17,13 +18,13 @@ import javax.validation.constraints.NotBlank;
 public class AuthorDto extends BaseDto<Long, Author> {
 
     @NotBlank
-    @ApiModelProperty(position = 1, value = "姓名", example = "雨果")
+    @ApiModelProperty(position = 1, value = "姓名", example = "雨果", required = true)
     private String name;
 
     @ApiModelProperty(position = 2, value = "性别")
-    private Gender gender = Gender.UNSPECIFIED;
+    private Gender gender;
 
-    @ApiModelProperty(position = 3, value = "国家代码")
-    private CountryCode countryCode = CountryCode.CN;
+    @ApiModelProperty(position = 3, value = "国家代码", allowableValues = "CN, US, ...")
+    private CountryCode countryCode;
 
 }

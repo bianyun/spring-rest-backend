@@ -16,6 +16,7 @@
 
 package com.silentcloud.springrest.model.enums;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.silentcloud.springrest.model.enums.base.EnumConst;
 import com.silentcloud.springrest.model.enums.base.converter.BaseEnumConstAttributeConverter;
 import com.silentcloud.springrest.model.enums.base.helper.EnumConstHelper;
@@ -307,6 +308,7 @@ public enum CountryCode implements EnumConst<CountryCode, Integer> {
     /**
      * <a href="http://en.wikipedia.org/wiki/China">China</a>
      */
+    @JsonEnumDefaultValue
     CN(156, "China", "CHN"),
 
     /**

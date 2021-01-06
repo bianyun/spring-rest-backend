@@ -25,12 +25,12 @@ public class BookDto extends BaseDto<Long, Book> {
 
     @NotBlank
     @Unique
-    @ApiModelProperty(position = 1, value = "ISBN", example = "978-0-13-469288-3")
+    @ApiModelProperty(position = 1, value = "ISBN", example = "978-0-13-469288-3", required = true)
     private String isbn;
 
     @NotBlank
     @Unique(scope = "publisher")
-    @ApiModelProperty(position = 2, value = "名称", example = "动物农场")
+    @ApiModelProperty(position = 2, value = "名称", example = "动物农场", required = true)
     private String title;
 
     @ApiModelProperty(position = 3, value = "字数", example = "500000")
@@ -40,7 +40,7 @@ public class BookDto extends BaseDto<Long, Book> {
     private Long unitPrice;
 
     @NotNull
-    @ApiModelProperty(position = 5, value = "出版社")
+    @ApiModelProperty(position = 5, value = "出版社", required = true)
     @Valid
     @ConvertGroup.List({
             @ConvertGroup(from = Create.class, to = Reference.class),
@@ -51,7 +51,7 @@ public class BookDto extends BaseDto<Long, Book> {
 
     @NotEmpty
     @Valid
-    @ApiModelProperty(position = 6, value = "作者列表")
+    @ApiModelProperty(position = 6, value = "作者列表", required = true)
     @ConvertGroup.List({
             @ConvertGroup(from = Create.class, to = Reference.class),
             @ConvertGroup(from = Update.class, to = Reference.class),

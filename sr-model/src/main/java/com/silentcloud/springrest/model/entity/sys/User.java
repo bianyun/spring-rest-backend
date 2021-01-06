@@ -38,7 +38,6 @@ public class User extends AbstractAuditableEntity implements LogicallyDeletable,
 
     private String pictureUrl;
 
-    @Column(nullable = false)
     private Gender gender;
 
     boolean active;
