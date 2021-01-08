@@ -21,12 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.silentcloud.spring.rest.jooq.gen.Tables.*;
+import static com.silentcloud.springrest.jooq.gen.Tables.*;
 import static org.jooq.impl.DSL.groupConcat;
 
 @Service
 @Transactional(readOnly = true)
 public class BookServiceImpl extends AbstractBaseService<Long, Book, BookDto> implements BookService {
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final PublisherRepository publisherRepository;

@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.silentcloud.spring.rest.jooq.gen.Tables.SYS_USER;
+import static com.silentcloud.springrest.jooq.gen.Tables.SYS_USER;
 
 
 @Slf4j

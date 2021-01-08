@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static com.silentcloud.spring.rest.jooq.gen.Tables.SYS_BUTTON;
+import static com.silentcloud.springrest.jooq.gen.Tables.SYS_BUTTON;
 
 
 @Service

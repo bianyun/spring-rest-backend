@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.silentcloud.spring.rest.jooq.gen.Tables.LIB_AUTHOR;
+import static com.silentcloud.springrest.jooq.gen.Tables.LIB_AUTHOR;
 
 @Service
 @Transactional(readOnly = true)
