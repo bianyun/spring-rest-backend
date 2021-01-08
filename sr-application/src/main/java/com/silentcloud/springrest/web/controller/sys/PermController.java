@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 
 import static com.silentcloud.springrest.web.util.Consts.*;
 
-@Api(tags = "权限管理2")
+@Api(tags = "权限管理")
 @ApiSupport(order = 3)
 @RequestMapping("/sys/perms")
 @RestController
@@ -105,14 +105,6 @@ public class PermController {
                 syncMenuPermToDb(childMenu);
             }
         }
-    }
-
-    @ApiOperationSupport(order = SUBCLASS_API_OPERATION_ORDER_OFFSET + 4)
-    @RequiresPerm(name = "测试3", value = API_PERM_PREFIX + "test")
-    @ApiOperation("测试")
-    @PostMapping("/test")
-    public void test() {
-        // do nothing
     }
 
     @ResponseStatus(HttpStatus.CREATED)

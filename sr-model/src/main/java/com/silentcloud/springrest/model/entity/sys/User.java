@@ -26,9 +26,9 @@ public class User extends AbstractAuditableEntity implements LogicallyDeletable,
     @Column(nullable = false)
     private String password;
 
-    private String realName;
+    private String realname;
 
-    private String nickName;
+    private String nickname;
 
     @Column(unique = true)
     private String email;

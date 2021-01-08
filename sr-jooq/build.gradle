@@ -1,0 +1,7 @@
+dependencies {
+    implementation project(':sr-model')
+    implementation project(':sr-util')
+    implementation "org.jooq:jooq-meta-extensions-hibernate:${jooqMetaExtensionsVersion}"
+    implementation 'org.jooq:jooq-codegen'
+    runtimeOnly 'ch.qos.logback:logback-classic'
+}

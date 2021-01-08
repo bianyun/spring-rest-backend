@@ -34,10 +34,10 @@ public class UserDto extends BaseDto<Long, User> {
     private String password;
 
     @ApiModelProperty(position = 3, value = "昵称", example = "小李飞刀")
-    private String nickName;
+    private String nickname;
 
     @ApiModelProperty(position = 4, value = "姓名", example = "李寻欢")
-    private String realName;
+    private String realname;
 
     @Unique
     @Email

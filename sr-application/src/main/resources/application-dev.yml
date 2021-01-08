@@ -4,10 +4,10 @@ spring:
     username: sr
     password: sr123
     sqlScriptEncoding: UTF-8
-    initialization-mode: never
+    initialization-mode: always
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
   mvc:
     log-request-details: false
   devtools:

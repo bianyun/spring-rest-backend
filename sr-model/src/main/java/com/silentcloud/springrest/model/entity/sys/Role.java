@@ -1,19 +1,20 @@
 package com.silentcloud.springrest.model.entity.sys;
 
+import com.silentcloud.springrest.model.entity.AbstractAuditableEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-@Entity
 @Table(name = "sys_role")
-public class Role extends AbstractPersistable<Long> {
+@Entity
+@Data
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class Role extends AbstractAuditableEntity {
 
     @Column(unique = true, nullable = false)
     private String name;
