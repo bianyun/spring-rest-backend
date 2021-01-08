@@ -9,8 +9,12 @@ spring:
   jackson:
     deserialization:
       READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE: true
+      ACCEPT_EMPTY_STRING_AS_NULL_OBJECT: true
 
 server:
   servlet:
     context-path: /api/v1
+shiro:
+  loginUrl: /sys/auth/page/401
+  unauthorizedUrl: /sys/auth/page/403
 

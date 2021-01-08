@@ -9,7 +9,7 @@ spring:
     hibernate:
       ddl-auto: update
   mvc:
-    log-request-details: true
+    log-request-details: false
   devtools:
     restart:
       log-condition-evaluation-delta: false
@@ -24,7 +24,7 @@ logging:
     org:
       springframework.web: debug
       hibernate.SQL: debug
-
+      apache.shiro: debug
 knife4j:
   enable: true
   setting:

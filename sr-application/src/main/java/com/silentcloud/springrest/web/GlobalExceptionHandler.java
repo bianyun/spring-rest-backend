@@ -1,12 +1,18 @@
 package com.silentcloud.springrest.web;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.silentcloud.springrest.common.ErrorMsg;
 import com.silentcloud.springrest.service.api.CustomServiceLayerException;
 import com.silentcloud.springrest.util.LabelUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +30,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
+import static com.silentcloud.springrest.web.controller.sys.PermController.API_PERM_VALUE_NAME_MAP;
+
 @Slf4j
 @ControllerAdvice(annotations = RestController.class)
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    private static final String REGEX_API_PERM_UNAUTHORIZED_MSG = "User is not permitted \\[(\\S+)\\]";
 
     @ExceptionHandler(CustomWebLayerException.class)
     public ResponseEntity<Object> handleCustomWebLayerException(CustomWebLayerException ex) {
@@ -42,6 +51,45 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
         ErrorMsg errorMsg = buildErrorMsg("参数不合法", ex);
         return new ResponseEntity<>(errorMsg, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(IncorrectCredentialsException.class)
+    public ResponseEntity<Object> handleIncorrectCredentialsException(IncorrectCredentialsException ex) {
+        ErrorMsg errorMsg = buildErrorMsg("用户认证异常", "用户输入的账号或密码不正确");
+        return new ResponseEntity<>(errorMsg, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
+        ErrorMsg errorMsg = buildErrorMsg("用户认证异常", ex);
+        log.error("用户认证异常", ex);
+        return new ResponseEntity<>(errorMsg, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UnauthenticatedException.class)
+    public ResponseEntity<Object> handleUnauthenticatedException(UnauthenticatedException ex) {
+        ErrorMsg errorMsg = buildErrorMsg("用户认证异常", ex);
+        return new ResponseEntity<>(errorMsg, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException ex) {
+        String msg = ex.getMessage();
+        ErrorMsg errorMsg;
+        if (ReUtil.isMatch(REGEX_API_PERM_UNAUTHORIZED_MSG, msg)) {
+            String permValue = ReUtil.getGroup1(REGEX_API_PERM_UNAUTHORIZED_MSG, msg);
+            String permDesc = API_PERM_VALUE_NAME_MAP.getOrDefault(permValue, permValue);
+            errorMsg = buildErrorMsg("用户鉴权异常", StrUtil.format("用户没有权限访问接口 [{}]", permDesc));
+        } else {
+            errorMsg = buildErrorMsg("用户鉴权异常", ex);
+        }
+        return new ResponseEntity<>(errorMsg, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<Object> handleAuthorizationException(AuthorizationException ex) {
+        ErrorMsg errorMsg = buildErrorMsg("用户鉴权异常", ex);
+        return new ResponseEntity<>(errorMsg, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)
@@ -103,4 +151,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ErrorMsg.of(LocalDateTime.now(), error, message);
     }
 
+    private ErrorMsg buildErrorMsg(String error, String message) {
+        return ErrorMsg.of(LocalDateTime.now(), error, message);
+    }
 }

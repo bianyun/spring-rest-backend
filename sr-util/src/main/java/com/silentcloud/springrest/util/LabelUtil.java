@@ -20,7 +20,7 @@ public class LabelUtil {
     private final SimpleCache<AnnotatedElement, String> LABEL_CACHE = new SimpleCache<>();
 
     public String getClassLabel(Class<?> clazz) {
-        return getLabel(clazz, CLASS_LABEL_ANNOTATION_CLASS);
+        return clazz == null ? StrUtil.EMPTY : getLabel(clazz, CLASS_LABEL_ANNOTATION_CLASS);
     }
 
     public String getFieldLabel(Field field) {

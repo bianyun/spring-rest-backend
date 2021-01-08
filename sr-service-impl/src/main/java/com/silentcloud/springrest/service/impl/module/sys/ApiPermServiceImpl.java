@@ -31,12 +31,23 @@ public class ApiPermServiceImpl implements ApiPermService {
         return apiPermMapper.entityListToDtoList(apiPermRepository.findAll());
     }
 
+    @Transactional
     @Override
     public ApiPermDto create(@NonNull ApiPermDto dto) {
         ApiPerm savedEntity = apiPermRepository.save(apiPermMapper.dtoToEntity(dto));
         return apiPermMapper.entityToDto(savedEntity);
     }
 
+    @Transactional
+    @Override
+    public void updateById(@NonNull Long id, @NonNull ApiPermDto dto) {
+        ApiPerm entity = apiPermRepository.getOne(id);
+        entity.setName(dto.getName());
+        entity.setValue(dto.getValue());
+        apiPermRepository.save(entity);
+    }
+
+    @Transactional
     @Override
     public void deleteById(@NonNull Long id) {
         apiPermRepository.deleteById(id);
@@ -45,5 +56,10 @@ public class ApiPermServiceImpl implements ApiPermService {
     @Override
     public ApiPermDto findById(@NonNull Long id) {
         return apiPermMapper.entityToDto(apiPermRepository.getOne(id));
+    }
+
+    @Override
+    public ApiPermDto findByValue(@NonNull String value) {
+        return apiPermMapper.entityToDto(apiPermRepository.findByValue(value));
     }
 }

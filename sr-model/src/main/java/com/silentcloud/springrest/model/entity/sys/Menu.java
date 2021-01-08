@@ -28,7 +28,7 @@ public class Menu extends AbstractPersistable<Long> {
     private Menu parent;
 
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "parent", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<Menu> children = new ArrayList<>();
 
     @EqualsAndHashCode.Exclude
@@ -47,33 +47,33 @@ public class Menu extends AbstractPersistable<Long> {
     @ManyToMany(mappedBy = "menus")
     private Set<Role> roles = new HashSet<>();
 
-    public void addChild(Menu child) {
-        children.add(child);
-        child.setParent(this);
-    }
-
-    public void removeChild(Menu child) {
-        children.remove(child);
-        child.setParent(null);
-    }
-
-    public void addButton(Button button) {
-        buttons.add(button);
-        button.setParentMenu(this);
-    }
-
-    public void removeButton(Button button) {
-        buttons.remove(button);
-        button.setParentMenu(null);
-    }
-
-    public void addApiPerm(ApiPerm apiPerm) {
-        apiPerms.add(apiPerm);
-        apiPerm.getMenus().add(this);
-    }
-
-    public void removeApiPerm(ApiPerm apiPerm) {
-        apiPerms.remove(apiPerm);
-        apiPerm.getMenus().remove(this);
-    }
+    // public void addChild(Menu child) {
+    //     children.add(child);
+    //     child.setParent(this);
+    // }
+    //
+    // public void removeChild(Menu child) {
+    //     children.remove(child);
+    //     child.setParent(null);
+    // }
+    //
+    // public void addButton(Button button) {
+    //     buttons.add(button);
+    //     button.setParentMenu(this);
+    // }
+    //
+    // public void removeButton(Button button) {
+    //     buttons.remove(button);
+    //     button.setParentMenu(null);
+    // }
+    //
+    // public void addApiPerm(ApiPerm apiPerm) {
+    //     apiPerms.add(apiPerm);
+    //     apiPerm.getMenus().add(this);
+    // }
+    //
+    // public void removeApiPerm(ApiPerm apiPerm) {
+    //     apiPerms.remove(apiPerm);
+    //     apiPerm.getMenus().remove(this);
+    // }
 }

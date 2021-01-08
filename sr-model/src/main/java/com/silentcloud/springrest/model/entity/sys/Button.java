@@ -21,6 +21,8 @@ public class Button extends AbstractPersistable<Long> {
     @Column(unique = true, nullable = false)
     private String value;
 
+    private Integer showOrder;
+
     @ManyToOne(optional = false)
     private Menu parentMenu;
 
@@ -36,13 +38,13 @@ public class Button extends AbstractPersistable<Long> {
     @ManyToMany(mappedBy = "buttons")
     private Set<Role> roles = new HashSet<>();
 
-    public void addApiPerm(ApiPerm apiPerm) {
-        apiPerms.add(apiPerm);
-        apiPerm.getButtons().add(this);
-    }
-
-    public void removeApiPerm(ApiPerm apiPerm) {
-        apiPerms.remove(apiPerm);
-        apiPerm.getButtons().remove(this);
-    }
+    // public void addApiPerm(ApiPerm apiPerm) {
+    //     apiPerms.add(apiPerm);
+    //     apiPerm.getButtons().add(this);
+    // }
+    //
+    // public void removeApiPerm(ApiPerm apiPerm) {
+    //     apiPerms.remove(apiPerm);
+    //     apiPerm.getButtons().remove(this);
+    // }
 }

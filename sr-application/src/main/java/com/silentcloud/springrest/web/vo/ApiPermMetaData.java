@@ -12,8 +12,8 @@ import java.util.Set;
 @Data
 public class ApiPermMetaData {
 
-    @ApiModelProperty(position = 1, value = "未同步的权限值集合")
-    private Set<String> unsyncedApiPermValues;
+    @ApiModelProperty(position = 1, value = "未同步的接口权限值列表")
+    private List<String> unsyncedApiPermValues;
 
     @ApiModelProperty(position = 2, value = "接口权限数据")
     private List<ApiPermDto> apiPermList;

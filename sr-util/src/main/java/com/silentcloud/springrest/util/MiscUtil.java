@@ -12,6 +12,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.IntStream;
 
 @UtilityClass
@@ -55,6 +56,10 @@ public class MiscUtil {
     public <T> Class<T> getGenericParameterClass(Class<?> baseClass, String genericTypeParamName) {
         Assert.notBlank(genericTypeParamName);
 
+        if (baseClass.getGenericSuperclass().getTypeName().equals(Object.class.getName())) {
+            return null;
+        }
+
         ParameterizedType parameterizedType;
         if (baseClass.isInterface()) {
             parameterizedType = (ParameterizedType) baseClass.getGenericInterfaces()[0];
@@ -67,6 +72,12 @@ public class MiscUtil {
 
         int genericParamIndex = resolveGenericParamIndex(parameterizedType, genericTypeParamName);
         return ((Class<T>) parameterizedType.getActualTypeArguments()[genericParamIndex]);
+    }
+
+    public String parseDomainOfControllerClass(Class<?> controllerClass) {
+        String className = controllerClass.getName();
+        return StrUtil.subBefore(StrUtil.subAfter(className, "controller.", true), "Controller", false)
+                .toLowerCase().replaceAll("\\.", ":");
     }
 
     private int resolveGenericParamIndex(ParameterizedType parameterizedType, String genericTypeParamName) {

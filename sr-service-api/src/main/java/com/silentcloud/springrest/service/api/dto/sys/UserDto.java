@@ -20,7 +20,7 @@ import javax.validation.constraints.Size;
 @ApiModel("用户")
 public class UserDto extends BaseDto<Long, User> {
     public static final String DEFAULT_PASSWORD = "111111";
-    public static final String PREDEFINED_USER_SYSADMIN = "sysadmin";
+    public static final String PREDEFINED_USER_SUPERADMIN = "superadmin";
 
     @Unique
     @NotBlank

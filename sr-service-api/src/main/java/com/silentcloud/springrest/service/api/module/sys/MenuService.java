@@ -12,6 +12,8 @@ public interface MenuService {
 
     MenuDto create(MenuDto dto);
 
+    void updateById(Long id, MenuDto dto);
+
     void deleteById(Long aLong);
 
     MenuDto findById(Long id);
@@ -20,4 +22,7 @@ public interface MenuService {
 
     Set<ApiPermDto> getApiPermsByMenuId(Long menuId);
 
+    List<String> getAllMenuPermValuesInDb();
+
+    MenuDto findByValue(String value);
 }

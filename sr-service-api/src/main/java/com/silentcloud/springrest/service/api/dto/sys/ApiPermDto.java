@@ -1,7 +1,6 @@
 package com.silentcloud.springrest.service.api.dto.sys;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.silentcloud.springrest.model.entity.sys.ApiPerm;
 import com.silentcloud.springrest.service.api.dto.BaseDto;
 import com.silentcloud.springrest.service.api.dto.Unique;
@@ -11,7 +10,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -34,15 +32,6 @@ public class ApiPermDto extends BaseDto<Long, ApiPerm> {
     private ApiPermDto parent;
 
     @ApiModelProperty(position = 3, value = "子权限")
-    private List<ApiPermDto> children = new ArrayList<>();
+    private List<ApiPermDto> children;
 
-    public void addChild(ApiPermDto child) {
-        children.add(child);
-        child.setParent(this);
-    }
-
-    public void removeChild(ApiPermDto child) {
-        children.remove(child);
-        child.setParent(null);
-    }
 }

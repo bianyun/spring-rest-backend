@@ -17,6 +17,8 @@ dependencies {
 
     implementation "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
 
+    implementation "org.apache.shiro:shiro-spring-boot-web-starter:${shiroVersion}"
+
     runtimeOnly 'mysql:mysql-connector-java'
 
 }

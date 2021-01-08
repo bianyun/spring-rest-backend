@@ -10,11 +10,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @EqualsAndHashCode(callSuper = true)
+@Data
 @ApiModel("菜单")
 public class MenuDto extends BaseDto<Long, Menu> {
 
@@ -32,16 +31,7 @@ public class MenuDto extends BaseDto<Long, Menu> {
     @ApiModelProperty(hidden = true)
     private MenuDto parent;
 
-    @ApiModelProperty(position = 4, value = "子菜单")
-    private List<MenuDto> children = new ArrayList<>();
+    @ApiModelProperty(position = 3, value = "子菜单")
+    private List<MenuDto> children;
 
-    public void addChild(MenuDto child) {
-        children.add(child);
-        child.setParent(this);
-    }
-
-    public void removeChild(MenuDto child) {
-        children.remove(child);
-        child.setParent(null);
-    }
 }

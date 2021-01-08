@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -51,6 +52,15 @@ public class MenuServiceImpl implements MenuService {
 
     @Transactional
     @Override
+    public void updateById(Long id, MenuDto dto) {
+        Menu entity = menuRepository.getOne(id);
+        entity.setName(dto.getName());
+        entity.setValue(dto.getValue());
+        menuRepository.save(entity);
+    }
+
+    @Transactional
+    @Override
     public void deleteById(@NonNull Long id) {
         menuRepository.deleteById(id);
     }
@@ -70,5 +80,16 @@ public class MenuServiceImpl implements MenuService {
     public Set<ApiPermDto> getApiPermsByMenuId(Long menuId) {
         Menu menu = menuRepository.getOne(menuId);
         return apiPermMapper.entitySetToDtoSet(menu.getApiPerms());
+    }
+
+    @Override
+    public List<String> getAllMenuPermValuesInDb() {
+        List<Menu> menus = menuRepository.findAllByOrderByValue();
+        return menus.stream().map(Menu::getValue).collect(Collectors.toList());
+    }
+
+    @Override
+    public MenuDto findByValue(String value) {
+        return menuMapper.entityToDto(menuRepository.findByValue(value));
     }
 }

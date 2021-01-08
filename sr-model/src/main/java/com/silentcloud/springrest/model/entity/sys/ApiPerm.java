@@ -28,7 +28,7 @@ public class ApiPerm extends AbstractPersistable<Long> {
     private ApiPerm parent;
 
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "parent", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApiPerm> children = new ArrayList<>();
 
     @EqualsAndHashCode.Exclude
@@ -41,13 +41,4 @@ public class ApiPerm extends AbstractPersistable<Long> {
     @ManyToMany(mappedBy = "apiPerms")
     private Set<Button> buttons = new HashSet<>();
 
-    public void addChild(ApiPerm child) {
-        children.add(child);
-        child.setParent(this);
-    }
-
-    public void removeChild(ApiPerm child) {
-        children.remove(child);
-        child.setParent(null);
-    }
 }

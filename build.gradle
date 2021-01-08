@@ -6,6 +6,7 @@ buildscript {
         swaggerAnnotationsVersion = '1.5.22'
         knife4jVersion = '2.0.8'
         jpaSpecVersion = '3.2.5'
+        shiroVersion = '1.7.0'
     }
 }
 

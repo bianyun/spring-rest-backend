@@ -10,7 +10,11 @@ public interface ApiPermService {
 
     ApiPermDto create(ApiPermDto dto);
 
+    void updateById(Long id, ApiPermDto dto);
+
     void deleteById(Long aLong);
 
     ApiPermDto findById(Long id);
+
+    ApiPermDto findByValue(String value);
 }
