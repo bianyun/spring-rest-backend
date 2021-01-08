@@ -6,10 +6,14 @@ import com.silentcloud.springrest.service.api.dto.lib.AuthorDto;
 import com.silentcloud.springrest.service.api.module.lib.AuthorService;
 import com.silentcloud.springrest.service.impl.mapper.lib.AuthorMapper;
 import com.silentcloud.springrest.service.impl.module.AbstractBaseService;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.silentcloud.spring.rest.jooq.gen.Tables.LIB_AUTHOR;
 
 @Service
 @Transactional(readOnly = true)
@@ -18,11 +22,16 @@ public class AuthorServiceImpl extends AbstractBaseService<Long, Author, AuthorD
     private final AuthorMapper authorMapper;
 
     @Autowired
-    public AuthorServiceImpl(AuthorRepository authorRepository,
+    public AuthorServiceImpl(DSLContext dsl,
+                             AuthorRepository authorRepository,
                              AuthorMapper authorMapper) {
-        super(authorRepository, authorMapper);
+        super(dsl, authorRepository, authorMapper);
         this.authorRepository = authorRepository;
         this.authorMapper = authorMapper;
     }
 
+    @Override
+    protected Table<? extends Record> buildJoinedTable() {
+        return LIB_AUTHOR;
+    }
 }

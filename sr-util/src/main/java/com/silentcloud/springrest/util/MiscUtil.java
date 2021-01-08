@@ -12,7 +12,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.IntStream;
 
 @UtilityClass
@@ -56,7 +55,7 @@ public class MiscUtil {
     public <T> Class<T> getGenericParameterClass(Class<?> baseClass, String genericTypeParamName) {
         Assert.notBlank(genericTypeParamName);
 
-        if (baseClass.getGenericSuperclass().getTypeName().equals(Object.class.getName())) {
+        if (!baseClass.isInterface() && baseClass.getGenericSuperclass().getTypeName().equals(Object.class.getName())) {
             return null;
         }
 

@@ -17,8 +17,9 @@ public abstract class ButtonMapper implements BaseMapper<Long, Button, ButtonDto
     @Autowired
     private MenuRepository menuRepository;
 
-    @Mapping(target = "parentMenuId", source = "parentMenu.id")
+    @Mapping(target = "permType", ignore = true)
     @Mapping(target = "parentMenuName", source = "parentMenu.name")
+    @Mapping(target = "parentMenuValue", source = "parentMenu.value")
     @Override
     public abstract ButtonDto entityToDto(Button entity);
 
@@ -36,8 +37,8 @@ public abstract class ButtonMapper implements BaseMapper<Long, Button, ButtonDto
 
     @AfterMapping
     public void establishRelations(ButtonDto dto, @MappingTarget Button entity) {
-        Long parentMenuId = dto.getParentMenuId();
-        Assert.notNull(parentMenuId);
-        entity.setParentMenu(menuRepository.getOne(parentMenuId));
+        String parentMenuValue = dto.getParentMenuValue();
+        Assert.notBlank(parentMenuValue);
+        entity.setParentMenu(menuRepository.findByValue(parentMenuValue));
     }
 }

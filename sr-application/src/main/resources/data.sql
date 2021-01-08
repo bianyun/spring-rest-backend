@@ -15,9 +15,9 @@ VALUES (1, '2021-01-08 10:00:00.0', '2021-01-08 10:00:00.0', 1, 0, 'superadmin@1
      , (3, '2021-01-08 10:00:00.0', '2021-01-08 10:00:00.0', 1, 0, 'user@qq.com', 1, '13833334444', '西门吹雪', '$2a$11$o9wjnWtPfTq4fVBybPLg4e23szkYq4EkKVU/170tEe.RZl167mrde', '', '西门吹雪', 'user', 1, 1)
 ;
 
-INSERT INTO sys_role (id, created_time, last_modified_time, name, value, created_by_id, last_modified_by_id)
-VALUES (1, '2021-01-08 10:00:00.0', '2021-01-08 10:00:00.0', '管理员', 'Admin', 1, 1)
-     , (2, '2021-01-08 10:00:00.0', '2021-01-08 10:00:00.0', '操作员', 'Operator', 1, 1)
+INSERT INTO sys_role (id, created_time, last_modified_time, description, name, value, created_by_id, last_modified_by_id)
+VALUES (1, '2021-01-08 10:00:00.0', '2021-01-08 10:00:00.0', '后台管理员', '管理员', 'Admin', 1, 1)
+     , (2, '2021-01-08 10:00:00.0', '2021-01-08 10:00:00.0', '操作员，负责图书信息录入', '操作员', 'Operator', 1, 1)
 ;
 
 INSERT INTO sys_user_role (user_id, role_id)

@@ -4,28 +4,13 @@
 package com.silentcloud.spring.rest.jooq.gen;
 
 
-import com.silentcloud.spring.rest.jooq.gen.tables.LibAuthor;
-import com.silentcloud.spring.rest.jooq.gen.tables.LibBook;
-import com.silentcloud.spring.rest.jooq.gen.tables.LibBookAuthor;
-import com.silentcloud.spring.rest.jooq.gen.tables.LibBookTranslater;
-import com.silentcloud.spring.rest.jooq.gen.tables.LibPublisher;
-import com.silentcloud.spring.rest.jooq.gen.tables.LibTranslater;
-import com.silentcloud.spring.rest.jooq.gen.tables.SysApiPerm;
-import com.silentcloud.spring.rest.jooq.gen.tables.SysButton;
-import com.silentcloud.spring.rest.jooq.gen.tables.SysButtonApiPerm;
-import com.silentcloud.spring.rest.jooq.gen.tables.SysMenu;
-import com.silentcloud.spring.rest.jooq.gen.tables.SysMenuApiPerm;
-import com.silentcloud.spring.rest.jooq.gen.tables.SysRole;
-import com.silentcloud.spring.rest.jooq.gen.tables.SysRoleButton;
-import com.silentcloud.spring.rest.jooq.gen.tables.SysRoleMenu;
-import com.silentcloud.spring.rest.jooq.gen.tables.SysUser;
-import com.silentcloud.spring.rest.jooq.gen.tables.SysUserRole;
+import com.silentcloud.spring.rest.jooq.gen.tables.*;
 
 
 /**
- * Convenience access to all tables in the default schema.
+ * Convenience access to tables in the default schema.
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes" })
+@SuppressWarnings("unused")
 public class Tables {
 
     /**

@@ -13,6 +13,7 @@ dependencies {
     implementation project(':sr-common')
     implementation project(':sr-util')
     implementation project(':sr-model')
+    implementation project(':sr-jooq')
     implementation project(':sr-repository')
     implementation project(':sr-service-api')
 
@@ -26,5 +27,6 @@ dependencies {
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 
     implementation "com.github.wenhao:jpa-spec:${jpaSpecVersion}"
+    implementation "org.antlr:antlr4-runtime:${antrl4Version}"
 
 }

@@ -18,3 +18,8 @@ shiro:
   loginUrl: /sys/auth/page/401
   unauthorizedUrl: /sys/auth/page/403
 
+logging:
+  level:
+    org:
+      jooq.Constants: warn
+

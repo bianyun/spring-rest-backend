@@ -6,19 +6,12 @@ package com.silentcloud.spring.rest.jooq.gen.tables;
 
 import com.silentcloud.spring.rest.jooq.gen.DefaultSchema;
 import com.silentcloud.spring.rest.jooq.gen.tables.records.SysRoleRecord;
-
-import java.time.LocalDateTime;
-
-import org.jooq.Field;
-import org.jooq.Name;
-import org.jooq.Row7;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -56,6 +49,11 @@ public class SysRole extends TableImpl<SysRoleRecord> {
      * The column <code>SYS_ROLE.LAST_MODIFIED_TIME</code>.
      */
     public final TableField<SysRoleRecord, LocalDateTime> LAST_MODIFIED_TIME = createField(DSL.name("LAST_MODIFIED_TIME"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>SYS_ROLE.DESCRIPTION</code>.
+     */
+    public final TableField<SysRoleRecord, String> DESCRIPTION = createField(DSL.name("DESCRIPTION"), SQLDataType.VARCHAR(255), this, "");
 
     /**
      * The column <code>SYS_ROLE.NAME</code>.
@@ -138,11 +136,11 @@ public class SysRole extends TableImpl<SysRoleRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, LocalDateTime, LocalDateTime, String, String, Long, Long> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Long, LocalDateTime, LocalDateTime, String, String, String, Long, Long> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

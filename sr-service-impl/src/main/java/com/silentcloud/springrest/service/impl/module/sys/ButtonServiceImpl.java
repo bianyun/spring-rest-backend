@@ -10,12 +10,16 @@ import com.silentcloud.springrest.service.impl.mapper.sys.ApiPermMapper;
 import com.silentcloud.springrest.service.impl.mapper.sys.ButtonMapper;
 import com.silentcloud.springrest.service.impl.module.AbstractBaseService;
 import lombok.NonNull;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static com.silentcloud.spring.rest.jooq.gen.Tables.SYS_BUTTON;
 
 
 @Service
@@ -26,10 +30,11 @@ public class ButtonServiceImpl extends AbstractBaseService<Long, Button, ButtonD
     private final ApiPermMapper apiPermMapper;
 
     @Autowired
-    public ButtonServiceImpl(ButtonRepository buttonRepository,
+    public ButtonServiceImpl(DSLContext dsl,
+                             ButtonRepository buttonRepository,
                              ButtonMapper buttonMapper,
                              ApiPermMapper apiPermMapper) {
-        super(buttonRepository, buttonMapper);
+        super(dsl, buttonRepository, buttonMapper);
         this.buttonRepository = buttonRepository;
         this.buttonMapper = buttonMapper;
         this.apiPermMapper = apiPermMapper;
@@ -48,13 +53,15 @@ public class ButtonServiceImpl extends AbstractBaseService<Long, Button, ButtonD
         List<Button> buttons = buttonRepository.findAllByOrderByShowOrder();
         buttons.forEach(button -> {
             Menu parentMenu = button.getParentMenu();
-            List<ButtonDto> buttonDtos = resultMap.get(parentMenu.getValue());
-            if (buttonDtos == null) {
-                buttonDtos = new ArrayList<>();
-            }
+            List<ButtonDto> buttonDtos = resultMap.computeIfAbsent(parentMenu.getValue(), k -> new ArrayList<>());
             buttonDtos.add(buttonMapper.entityToDto(button));
         });
 
         return resultMap;
+    }
+
+    @Override
+    protected Table<? extends Record> buildJoinedTable() {
+        return SYS_BUTTON;
     }
 }

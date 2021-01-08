@@ -33,4 +33,7 @@ public class RoleDto extends BaseDto<Long, Role> {
     @NotBlank
     private String value;
 
+    @ApiModelProperty(position = 3, value = "角色描述")
+    private String description;
+
 }

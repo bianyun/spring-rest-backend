@@ -3,6 +3,8 @@ package com.silentcloud.springrest.web.controller;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.silentcloud.springrest.service.api.dto.BaseDto;
 import com.silentcloud.springrest.service.api.module.BaseService;
+import com.silentcloud.springrest.service.api.query.FlatQueryService;
+import com.silentcloud.springrest.service.api.query.JpaQueryService;
 import com.silentcloud.springrest.web.shiro.authz.annotation.RequiresPerm;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Persistable;
@@ -19,8 +21,10 @@ public abstract class AbstractActivatableController<ID extends Serializable, Ent
         extends AbstractBaseController<ID, Entity, DTO> {
     private final BaseService<ID, Entity, DTO> service;
 
-    protected AbstractActivatableController(BaseService<ID, Entity, DTO> service) {
-        super(service);
+    protected AbstractActivatableController(JpaQueryService jpaQueryService,
+                                            FlatQueryService flatQueryService,
+                                            BaseService<ID, Entity, DTO> service) {
+        super(jpaQueryService, flatQueryService, service);
         this.service = service;
     }
 

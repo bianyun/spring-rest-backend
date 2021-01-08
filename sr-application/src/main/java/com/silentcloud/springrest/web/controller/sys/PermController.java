@@ -6,6 +6,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
+import com.silentcloud.springrest.service.api.dto.PermLevel;
 import com.silentcloud.springrest.service.api.dto.ValidationGroups.Create;
 import com.silentcloud.springrest.service.api.dto.ValidationGroups.Update;
 import com.silentcloud.springrest.service.api.dto.sys.ApiPermDto;
@@ -82,9 +83,13 @@ public class PermController {
     @PostMapping("/sync-api-perms-to-db")
     public void syncApiPermsToDb(@RequestBody List<ApiPermDto> apiPermTreeData) {
         for (ApiPermDto packageLevelPerm : apiPermTreeData) {
-            for (ApiPermDto classLevelPerm : packageLevelPerm.getChildren()) {
+            packageLevelPerm.getChildren().forEach(classLevelPerm -> {
+                classLevelPerm.setParent(packageLevelPerm);
                 classLevelPerm.getChildren().forEach(methodLevelPerm -> methodLevelPerm.setParent(classLevelPerm));
+            });
 
+            syncApiPermToDb(packageLevelPerm);
+            for (ApiPermDto classLevelPerm : packageLevelPerm.getChildren()) {
                 syncApiPermToDb(classLevelPerm);
                 for (ApiPermDto methodLevelPerm : classLevelPerm.getChildren()) {
                     syncApiPermToDb(methodLevelPerm);
@@ -143,7 +148,9 @@ public class PermController {
     }
 
     private static List<ApiPermDto> buildApiPermList() {
+        Comparator<Package> comparator = Comparator.nullsLast(Comparator.comparingInt(PermController::getPackageApiOrder));
         return getModulePackages().stream()
+                .sorted(comparator)
                 .map(PermController::generatePackageLevelApiPerm)
                 .collect(Collectors.toList());
     }
@@ -161,10 +168,11 @@ public class PermController {
 
     private static ApiPermDto generatePackageLevelApiPerm(Package pkg) {
         ApiPermDto packageLevelPerm = new ApiPermDto();
-        packageLevelPerm.setName(AnnotationUtil.getAnnotationValue(pkg, ApiGroup.class));
+        packageLevelPerm.setPermLevel(PermLevel.GROUP);
+        packageLevelPerm.setName(AnnotationUtil.getAnnotationValue(pkg, ApiGroup.class, "name"));
 
         String packageDomain = StrUtil.subAfter(pkg.getName(), "controller.", false);
-        packageLevelPerm.setValue((API_PERM_PREFIX + "manage").replace(PLACEHOLDER_DOMAIN, packageDomain));
+        packageLevelPerm.setValue(PACKAGE_OR_CLASS_LEVEL_API_PERM_TEMPLATE.replace(PLACEHOLDER_DOMAIN, packageDomain));
 
         List<ApiPermDto> classLevelPerms = getControllerClassesUnderPackage(pkg).stream()
                 .map(PermController::generateClassLevelApiPerm).collect(Collectors.toList());
@@ -173,20 +181,7 @@ public class PermController {
     }
 
     private static List<Class<?>> getControllerClassesUnderPackage(Package pkg) {
-        Comparator<Class<?>> comparator = (class1, class2) -> {
-            Integer order1 = AnnotationUtil.getAnnotationValue(class1, ApiSupport.class, "order");
-            Integer order2 = AnnotationUtil.getAnnotationValue(class2, ApiSupport.class, "order");
-
-            if (order1 == null && order2 == null) {
-                return class1.getSimpleName().compareTo(class2.getSimpleName());
-            } else if (order1 != null && order2 != null) {
-                return order1 - order2;
-            } else if (order1 != null) {
-                return -1;
-            } else {
-                return 1;
-            }
-        };
+        Comparator<Class<?>> comparator = Comparator.nullsLast(Comparator.comparingInt(PermController::getClassApiOrder));
 
         return ClassUtil.scanPackage(pkg.getName(),
                 clazz -> ClassUtil.isNormalClass(clazz) && !ReflectUtil.getPublicMethods(clazz,
@@ -194,8 +189,17 @@ public class PermController {
                 .stream().sorted(comparator).collect(Collectors.toList());
     }
 
+    private static Integer getClassApiOrder(Class<?> clazz) {
+        return AnnotationUtil.getAnnotationValue(clazz, ApiSupport.class, "order");
+    }
+
+    private static Integer getPackageApiOrder(Package pack) {
+        return AnnotationUtil.getAnnotationValue(pack, ApiGroup.class, "order");
+    }
+
     private static ApiPermDto generateClassLevelApiPerm(Class<?> controllerClass) {
         ApiPermDto classLevelPerm = new ApiPermDto();
+        classLevelPerm.setPermLevel(PermLevel.CLASS);
 
         String permName;
         String[] tags = AnnotationUtil.getAnnotationValue(controllerClass, Api.class, "tags");
@@ -208,7 +212,7 @@ public class PermController {
 
         String label = LabelUtil.getClassLabel(MiscUtil.getDtoGenericParameterClass(controllerClass));
         String domain = MiscUtil.parseDomainOfControllerClass(controllerClass);
-        String permValue = (API_PERM_PREFIX + "manage").replace(PLACEHOLDER_DOMAIN, domain);
+        String permValue = PACKAGE_OR_CLASS_LEVEL_API_PERM_TEMPLATE.replace(PLACEHOLDER_DOMAIN, domain);
         classLevelPerm.setValue(permValue);
 
         List<Method> methods = getMethodsUnderClass(controllerClass);
@@ -245,6 +249,7 @@ public class PermController {
 
     private static ApiPermDto generateMethodLevelApiPerm(String classPermName, Method method, String label, String domain) {
         ApiPermDto methodLevelPerm = new ApiPermDto();
+        methodLevelPerm.setPermLevel(PermLevel.METHOD);
 
         String permName = AnnotationUtil.getAnnotationValue(method, RequiresPerm.class, "name");
         String permValue = AnnotationUtil.getAnnotationValue(method, RequiresPerm.class, "value");
@@ -263,6 +268,10 @@ public class PermController {
     private List<String> getUnsyncedApiPermValues() {
         List<String> resultSet = new ArrayList<>();
         for (ApiPermDto packageLevelPerm : API_PERM_LIST) {
+            if (isApiPermNotSyncedWithDbRecord(packageLevelPerm)) {
+                resultSet.add(packageLevelPerm.getValue());
+            }
+
             for (ApiPermDto classLevelPerm : packageLevelPerm.getChildren()) {
                 if (isApiPermNotSyncedWithDbRecord(classLevelPerm)) {
                     resultSet.add(classLevelPerm.getValue());

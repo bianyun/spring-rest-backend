@@ -7,6 +7,8 @@ import com.silentcloud.springrest.service.api.dto.lib.BookDto;
 import com.silentcloud.springrest.service.api.dto.lib.TranslaterDto;
 import com.silentcloud.springrest.service.api.module.lib.BookService;
 import com.silentcloud.springrest.service.api.module.lib.TranslaterService;
+import com.silentcloud.springrest.service.api.query.FlatQueryService;
+import com.silentcloud.springrest.service.api.query.JpaQueryService;
 import com.silentcloud.springrest.web.controller.AbstractBaseController;
 import com.silentcloud.springrest.web.shiro.authz.annotation.RequiresPermViewDetail;
 import io.swagger.annotations.Api;
@@ -30,9 +32,11 @@ public class TranslaterController extends AbstractBaseController<Long, Translate
     private final BookService bookService;
 
     @Autowired
-    public TranslaterController(TranslaterService translaterService,
+    public TranslaterController(JpaQueryService jpaQueryService,
+                                FlatQueryService flatQueryService,
+                                TranslaterService translaterService,
                                 BookService bookService) {
-        super(translaterService);
+        super(jpaQueryService, flatQueryService, translaterService);
         this.translaterService = translaterService;
         this.bookService = bookService;
     }

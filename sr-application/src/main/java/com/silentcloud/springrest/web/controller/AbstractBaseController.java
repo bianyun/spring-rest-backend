@@ -5,6 +5,12 @@ import com.silentcloud.springrest.service.api.dto.BaseDto;
 import com.silentcloud.springrest.service.api.dto.ValidationGroups.Create;
 import com.silentcloud.springrest.service.api.dto.ValidationGroups.Update;
 import com.silentcloud.springrest.service.api.module.BaseService;
+import com.silentcloud.springrest.service.api.query.FlatQueryService;
+import com.silentcloud.springrest.service.api.query.JpaQueryService;
+import com.silentcloud.springrest.service.api.query.request.PageQueryParam;
+import com.silentcloud.springrest.service.api.query.request.QueryParam;
+import com.silentcloud.springrest.service.api.query.response.FlatQueryRecord;
+import com.silentcloud.springrest.service.api.query.response.PageInfo;
 import com.silentcloud.springrest.util.LabelUtil;
 import com.silentcloud.springrest.util.MiscUtil;
 import com.silentcloud.springrest.web.IllegalActionTargetResourceException;
@@ -19,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import static com.silentcloud.springrest.web.util.Consts.API_PERM_PREFIX;
 import static com.silentcloud.springrest.web.util.Consts.PLACEHOLDER_LABEL;
@@ -31,9 +38,15 @@ public abstract class AbstractBaseController<ID extends Serializable,
     private final Class<Entity> entityClass = MiscUtil.getEntityGenericParameterClass(getClass());
     private final String label = LabelUtil.getClassLabel(MiscUtil.getDtoGenericParameterClass(getClass()));
 
+    private final JpaQueryService jpaQueryService;
+    private final FlatQueryService flatQueryService;
     private final BaseService<ID, Entity, DTO> service;
 
-    protected AbstractBaseController(BaseService<ID, Entity, DTO> service) {
+    protected AbstractBaseController(JpaQueryService jpaQueryService,
+                                     FlatQueryService flatQueryService,
+                                     BaseService<ID, Entity, DTO> service) {
+        this.jpaQueryService = jpaQueryService;
+        this.flatQueryService = flatQueryService;
         this.service = service;
     }
 
@@ -46,6 +59,18 @@ public abstract class AbstractBaseController<ID extends Serializable,
     }
 
     @ApiOperationSupport(order = 2)
+    @RequiresPermViewDetail
+    @ApiOperation("通过ID查找")
+    @GetMapping("/{id}")
+    public DTO readById(@PathVariable ID id) {
+        DTO dto = service.findById(id);
+        if (dto == null) {
+            throw resourceNotFoundException(id);
+        }
+        return dto;
+    }
+
+    @ApiOperationSupport(order = 3)
     @RequiresPerm(name = "添加" + PLACEHOLDER_LABEL, value = API_PERM_PREFIX + "add")
     @ApiOperation("新增")
     @ResponseStatus(CREATED)
@@ -54,7 +79,7 @@ public abstract class AbstractBaseController<ID extends Serializable,
         return service.create(dto);
     }
 
-    @ApiOperationSupport(order = 3)
+    @ApiOperationSupport(order = 4)
     @RequiresPerm(name = "更新" + PLACEHOLDER_LABEL, value = API_PERM_PREFIX + "update")
     @ApiOperation("更新")
     @PutMapping("/{id}")
@@ -66,7 +91,7 @@ public abstract class AbstractBaseController<ID extends Serializable,
         }
     }
 
-    @ApiOperationSupport(order = 4)
+    @ApiOperationSupport(order = 5)
     @RequiresPerm(name = "删除" + PLACEHOLDER_LABEL, value = API_PERM_PREFIX + "delete")
     @ApiOperation("删除")
     @ResponseStatus(NO_CONTENT)
@@ -79,17 +104,47 @@ public abstract class AbstractBaseController<ID extends Serializable,
         }
     }
 
-    @ApiOperationSupport(order = 5)
-    @RequiresPermViewDetail
-    @ApiOperation("通过ID查找")
-    @GetMapping("/{id}")
-    public DTO readById(@PathVariable ID id) {
-        DTO dto = service.findById(id);
-        if (dto == null) {
-            throw resourceNotFoundException(id);
-        }
-        return dto;
+    @ApiOperationSupport(order = 6)
+    @RequiresPerm(name = "批量删除" + PLACEHOLDER_LABEL, value = API_PERM_PREFIX + "batch-delete")
+    @ApiOperation("批量删除")
+    @ResponseStatus(NO_CONTENT)
+    @DeleteMapping("/batch")
+    public void batchDeleteByIdSet(@RequestBody Set<ID> idSet) {
+        idSet.forEach(this::deleteById);
     }
+
+    @RequiresPermViewList
+    @ApiOperationSupport(order = 7)
+    @ApiOperation("JPA查询")
+    @GetMapping("/query-jpa")
+    public List<DTO> queryJpa(QueryParam queryParam) {
+        return jpaQueryService.query(entityClass, queryParam);
+    }
+
+    @RequiresPermViewList
+    @ApiOperationSupport(order = 8)
+    @ApiOperation("扁平查询")
+    @GetMapping("/query-flat")
+    public List<FlatQueryRecord> queryFlat(QueryParam queryParam) {
+        return flatQueryService.query(entityClass, queryParam);
+    }
+
+    @RequiresPermViewList
+    @ApiOperationSupport(order = 9)
+    @ApiOperation("分页JPA查询")
+    @GetMapping("/page-query-jpa")
+    public PageInfo<DTO> pageQueryJpa(PageQueryParam pageQueryParam) {
+        return jpaQueryService.pageQuery(entityClass, pageQueryParam);
+    }
+
+    @RequiresPermViewList
+    @ApiOperationSupport(order = 10)
+    @ApiOperation("分页扁平查询")
+    @GetMapping("/page-query-flat")
+    public PageInfo<FlatQueryRecord> pageQueryFlat(PageQueryParam pageQueryParam) {
+        return flatQueryService.pageQuery(entityClass, pageQueryParam);
+    }
+
 
     protected IllegalActionTargetResourceException illegalActionTargetResourceException(ID id, String actionLabel) {
         return new IllegalActionTargetResourceException(id, label, actionLabel);

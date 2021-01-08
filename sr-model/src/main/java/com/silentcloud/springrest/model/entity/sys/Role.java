@@ -22,6 +22,8 @@ public class Role extends AbstractAuditableEntity {
     @Column(unique = true, nullable = false)
     private String value;
 
+    private String description;
+
     @EqualsAndHashCode.Exclude
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "sys_role_menu",

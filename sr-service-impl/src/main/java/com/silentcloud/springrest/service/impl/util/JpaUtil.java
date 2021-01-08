@@ -6,9 +6,13 @@ import cn.hutool.core.util.ReflectUtil;
 import com.github.wenhao.jpa.Specifications;
 import com.silentcloud.springrest.model.entity.LogicallyDeletable;
 import com.silentcloud.springrest.service.api.dto.BaseDto;
+import com.silentcloud.springrest.service.api.query.parser.QueryConditionExprParser;
 import com.silentcloud.springrest.service.impl.mapper.BaseMapper;
 import com.silentcloud.springrest.service.impl.meta.EntityMetaData;
 import com.silentcloud.springrest.service.impl.meta.EntityMetaDataMap;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.TableLike;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -86,6 +90,21 @@ public final class JpaUtil {
 
         return resultSet;
     }
+
+    public static <ID extends Serializable, DTO extends BaseDto<ID, Entity>, Entity extends Persistable<ID>>
+    QueryConditionExprParser<Specification<Entity>> getJpaQueryConditionExprParser(Class<Entity> entityClass) {
+        EntityMetaData<ID, DTO, Entity> entityMetaData = EntityMetaDataMap.get(entityClass);
+        return entityMetaData.getJpaQueryConditionExprParser();
+    }
+
+    public static QueryConditionExprParser<Condition> getFlatQueryConditionExprParser(Class<?> entityClass) {
+        return EntityMetaDataMap.get(entityClass).getFlatQueryConditionExprParser();
+    }
+
+    public static TableLike<? extends Record> getJooqNestedTable(Class<?> entityClass) {
+        return EntityMetaDataMap.get(entityClass).getJooqNestedTable();
+    }
+
 
     public static <ID extends Serializable, DTO extends BaseDto<ID, Entity>, Entity extends Persistable<ID>>
     BaseMapper<ID, Entity, DTO> getMapper(Class<Entity> entityClass) {

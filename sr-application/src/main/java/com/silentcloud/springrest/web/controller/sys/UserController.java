@@ -6,6 +6,8 @@ import com.silentcloud.springrest.model.entity.sys.User;
 import com.silentcloud.springrest.service.api.dto.sys.RoleDto;
 import com.silentcloud.springrest.service.api.dto.sys.UserDto;
 import com.silentcloud.springrest.service.api.module.sys.UserService;
+import com.silentcloud.springrest.service.api.query.FlatQueryService;
+import com.silentcloud.springrest.service.api.query.JpaQueryService;
 import com.silentcloud.springrest.web.controller.AbstractActivatableController;
 import com.silentcloud.springrest.web.vo.UpdatePasswordFormData;
 import com.silentcloud.springrest.web.vo.UserProfileVo;
@@ -29,8 +31,10 @@ public class UserController extends AbstractActivatableController<Long, User, Us
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
-        super(userService);
+    public UserController(JpaQueryService jpaQueryService,
+                          FlatQueryService flatQueryService,
+                          UserService userService) {
+        super(jpaQueryService, flatQueryService, userService);
         this.userService = userService;
     }
 

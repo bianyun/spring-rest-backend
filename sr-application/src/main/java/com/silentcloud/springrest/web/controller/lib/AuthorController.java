@@ -7,6 +7,8 @@ import com.silentcloud.springrest.service.api.dto.lib.AuthorDto;
 import com.silentcloud.springrest.service.api.dto.lib.BookDto;
 import com.silentcloud.springrest.service.api.module.lib.AuthorService;
 import com.silentcloud.springrest.service.api.module.lib.BookService;
+import com.silentcloud.springrest.service.api.query.FlatQueryService;
+import com.silentcloud.springrest.service.api.query.JpaQueryService;
 import com.silentcloud.springrest.web.controller.AbstractBaseController;
 import com.silentcloud.springrest.web.shiro.authz.annotation.RequiresPermViewDetail;
 import io.swagger.annotations.Api;
@@ -30,9 +32,11 @@ public class AuthorController extends AbstractBaseController<Long, Author, Autho
     private final BookService bookService;
 
     @Autowired
-    public AuthorController(AuthorService authorService,
+    public AuthorController(JpaQueryService jpaQueryService,
+                            FlatQueryService flatQueryService,
+                            AuthorService authorService,
                             BookService bookService) {
-        super(authorService);
+        super(jpaQueryService, flatQueryService, authorService);
         this.authorService = authorService;
         this.bookService = bookService;
     }

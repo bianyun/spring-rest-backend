@@ -2,6 +2,8 @@ package com.silentcloud.springrest.service.impl.module;
 
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.Filter;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.wenhao.jpa.PredicateBuilder;
@@ -18,16 +20,20 @@ import com.silentcloud.springrest.service.api.module.BaseService;
 import com.silentcloud.springrest.service.impl.mapper.BaseMapper;
 import com.silentcloud.springrest.service.impl.meta.EntityMetaData;
 import com.silentcloud.springrest.service.impl.meta.EntityMetaDataMap;
+import com.silentcloud.springrest.service.impl.query.flat.FlatQueryConditionExprParser;
+import com.silentcloud.springrest.service.impl.util.JooqUtil;
 import com.silentcloud.springrest.service.impl.util.JpaUtil;
 import com.silentcloud.springrest.util.LabelUtil;
 import com.silentcloud.springrest.util.MiscUtil;
 import lombok.NonNull;
 import lombok.Value;
 import org.hibernate.Hibernate;
+import org.jooq.*;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -47,6 +53,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
     private static final Collection<Class<?>> UNIQUE_CHECK_ATTR_ALLOWED_VALUE_TYPES = Arrays.asList(
             String.class, Integer.class, Long.class, int.class, long.class);
 
+    protected final DSLContext dsl;
     private final BaseRepository<ID, Entity> repository;
     private final BaseMapper<ID, Entity, DTO> mapper;
 
@@ -70,11 +77,37 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         specForNotLogicallyDeleted = Specifications.<Entity>and().eq(isEntityLogicallyDeletable, DELETED_PROPERTY_NAME, false).build();
     }
 
-    protected AbstractBaseService(BaseRepository<ID, Entity> repository,
+    protected AbstractBaseService(DSLContext dsl,
+                                  BaseRepository<ID, Entity> repository,
                                   BaseMapper<ID, Entity, DTO> mapper) {
+        this.dsl = dsl;
         this.repository = repository;
         this.mapper = mapper;
     }
+
+    @PostConstruct
+    private void buildNestedTable() {
+        SelectConditionStep<? extends Record> selectConditionStep =
+                buildSelectConditionStep(flteredBuiltSelectPartSql(), buildJoinedTable());
+        TableLike<? extends Record> nestedTable = buildRemainingPartSql(selectConditionStep).asTable("nested");
+        Set<String> legalFlatQueryOuterFieldNames = JooqUtil.getLegalOuterFieldNames(nestedTable);
+
+        EntityMetaData<ID, DTO, Entity> entityMetaData = EntityMetaDataMap.get(entityClass);
+        entityMetaData.setFlatQueryConditionExprParser(new FlatQueryConditionExprParser(legalFlatQueryOuterFieldNames));
+        entityMetaData.setJooqNestedTable(nestedTable);
+        entityMetaData.setMapper(mapper);
+    }
+
+    protected SelectSelectStep<? extends Record> buildSelectPartSql() {
+        return dsl.select();
+    }
+
+    protected abstract Table<? extends Record> buildJoinedTable();
+
+    protected SelectFinalStep<? extends Record> buildRemainingPartSql(SelectConditionStep<? extends Record> selectConditionStep) {
+        return selectConditionStep;
+    }
+
 
     private Specification<Entity> buildFindByIdSpec(ID id) {
         return JpaUtil.buildFindByIdSpec(entityClass, id);
@@ -173,6 +206,37 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         } else {
             throw new UnsupportedOperationException("entity not activatable, activatable operation not supported.");
         }
+    }
+
+    private SelectSelectStep<? extends Record> flteredBuiltSelectPartSql() {
+        SelectSelectStep<? extends Record> selectPartSql = buildSelectPartSql();
+        org.jooq.Field<?>[] allFields = selectPartSql.getSelect().toArray(new org.jooq.Field<?>[0]);
+        if (isEntityLogicallyDeletable) {
+            org.jooq.Field<?>[] filteredFields = ArrayUtil.filter(allFields,
+                    (Filter<org.jooq.Field<?>>) field -> !JooqUtil.buildFieldAlias(field).endsWith(
+                            JooqUtil.DELIMETER_BETWEEN_TABLE_AND_COLUMN + "deleted"));
+            return dsl.select(filteredFields);
+        } else {
+            return dsl.select(allFields);
+        }
+    }
+
+    private SelectConditionStep<? extends Record> buildSelectConditionStep(SelectSelectStep<? extends Record> selectPartSql,
+                                                                           Table<? extends Record> joinedTable) {
+        List<org.jooq.Field<?>> aliasedFields;
+        if (selectPartSql.getSQL().equals(dsl.select().getSQL())) {
+            aliasedFields = JooqUtil.addAliasForTableFields(joinedTable.fields());
+        } else {
+            aliasedFields = JooqUtil.addAliasForTableFields(selectPartSql.getSelect());
+        }
+
+        SelectConditionStep<? extends Record> result = dsl.select(aliasedFields).from(joinedTable).where();
+        if (isEntityLogicallyDeletable) {
+            org.jooq.Field<Boolean> field = joinedTable.field("DELETED", Boolean.class);
+            Condition notLogicallyDeleted = Objects.requireNonNull(field).eq(false);
+            result = result.and(notLogicallyDeleted);
+        }
+        return result;
     }
 
     private void checkUniqueConstraints(DTO dto) {

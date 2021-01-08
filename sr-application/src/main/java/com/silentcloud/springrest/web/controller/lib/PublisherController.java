@@ -7,6 +7,8 @@ import com.silentcloud.springrest.service.api.dto.lib.BookDto;
 import com.silentcloud.springrest.service.api.dto.lib.PublisherDto;
 import com.silentcloud.springrest.service.api.module.lib.BookService;
 import com.silentcloud.springrest.service.api.module.lib.PublisherService;
+import com.silentcloud.springrest.service.api.query.FlatQueryService;
+import com.silentcloud.springrest.service.api.query.JpaQueryService;
 import com.silentcloud.springrest.web.controller.AbstractBaseController;
 import com.silentcloud.springrest.web.shiro.authz.annotation.RequiresPermViewDetail;
 import io.swagger.annotations.Api;
@@ -30,9 +32,11 @@ public class PublisherController extends AbstractBaseController<Long, Publisher,
     private final BookService bookService;
 
     @Autowired
-    public PublisherController(PublisherService publisherService,
+    public PublisherController(JpaQueryService jpaQueryService,
+                               FlatQueryService flatQueryService,
+                               PublisherService publisherService,
                                BookService bookService) {
-        super(publisherService);
+        super(jpaQueryService, flatQueryService, publisherService);
         this.publisherService = publisherService;
         this.bookService = bookService;
     }

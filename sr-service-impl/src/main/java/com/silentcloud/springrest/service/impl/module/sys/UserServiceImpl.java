@@ -13,6 +13,9 @@ import com.silentcloud.springrest.service.impl.mapper.sys.*;
 import com.silentcloud.springrest.service.impl.module.AbstractBaseService;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.silentcloud.spring.rest.jooq.gen.Tables.SYS_USER;
 
 
 @Slf4j
@@ -38,7 +43,8 @@ public class UserServiceImpl extends AbstractBaseService<Long, User, UserDto> im
     private final ButtonMapper buttonMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,
+    public UserServiceImpl(DSLContext dsl,
+                           UserRepository userRepository,
                            UserMapper userMapper,
                            RoleRepository roleRepository,
                            ButtonRepository buttonRepository,
@@ -48,7 +54,7 @@ public class UserServiceImpl extends AbstractBaseService<Long, User, UserDto> im
                            RoleMapper roleMapper,
                            MenuMapper menuMapper,
                            ButtonMapper buttonMapper) {
-        super(userRepository, userMapper);
+        super(dsl, userRepository, userMapper);
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.roleRepository = roleRepository;
@@ -132,4 +138,8 @@ public class UserServiceImpl extends AbstractBaseService<Long, User, UserDto> im
                 .flatMap(Set::stream).map(buttonMapper::entityToDto).collect(Collectors.toSet());
     }
 
+    @Override
+    protected Table<? extends Record> buildJoinedTable() {
+        return SYS_USER;
+    }
 }
