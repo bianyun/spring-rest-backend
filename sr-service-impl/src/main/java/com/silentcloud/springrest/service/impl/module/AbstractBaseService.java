@@ -10,12 +10,14 @@ import com.github.wenhao.jpa.PredicateBuilder;
 import com.github.wenhao.jpa.Specifications;
 import com.silentcloud.springrest.model.entity.Activatable;
 import com.silentcloud.springrest.model.entity.LogicallyDeletable;
+import com.silentcloud.springrest.model.entity.sys.User;
 import com.silentcloud.springrest.repository.BaseRepository;
 import com.silentcloud.springrest.service.api.EntityDeleteFailureException;
 import com.silentcloud.springrest.service.api.LogicallyDeletedEntityActivateFailureException;
 import com.silentcloud.springrest.service.api.UniqueConstraintViolationException;
 import com.silentcloud.springrest.service.api.dto.BaseDto;
 import com.silentcloud.springrest.service.api.dto.Unique;
+import com.silentcloud.springrest.service.api.dto.sys.UserDto;
 import com.silentcloud.springrest.service.api.module.BaseService;
 import com.silentcloud.springrest.service.impl.mapper.BaseMapper;
 import com.silentcloud.springrest.service.impl.meta.EntityMetaData;
@@ -25,12 +27,12 @@ import com.silentcloud.springrest.service.impl.util.JooqUtil;
 import com.silentcloud.springrest.service.impl.util.JpaUtil;
 import com.silentcloud.springrest.util.LabelUtil;
 import com.silentcloud.springrest.util.MiscUtil;
-import lombok.NonNull;
 import lombok.Value;
 import org.hibernate.Hibernate;
 import org.jooq.*;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
@@ -114,12 +116,13 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
     }
 
     @Override
-    public boolean existsById(@NonNull ID id) {
+    public boolean existsById(ID id) {
         return findById(id) != null;
     }
 
+    // @Nullable
     @Override
-    public DTO findById(@NonNull ID id) {
+    public DTO findById(ID id) {
         Entity entity = repository.findOne(buildFindByIdSpec(id)).orElse(null);
         return mapper.entityToDto(entity);
     }
@@ -132,7 +135,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
 
     @Transactional
     @Override
-    public DTO create(@NonNull DTO dto) {
+    public DTO create(DTO dto) {
         checkUniqueConstraints(dto);
         Entity entity = mapper.dtoToEntity(dto);
         Entity savedEntity = repository.save(entity);
@@ -141,7 +144,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
 
     @Transactional
     @Override
-    public DTO updateById(@NonNull ID id, @NonNull DTO dto) {
+    public DTO updateById(ID id, DTO dto) {
         if (!Objects.equals(id, Objects.requireNonNull(dto.getId()))) {
             String dtoClassName = dto.getClass().getSimpleName();
             throw illegalArgumentException("路径变量ID 必须跟请求参数对象{}的ID 保持一致", dtoClassName);
@@ -156,7 +159,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
 
     @Transactional
     @Override
-    public void deleteById(@NonNull ID id) {
+    public void deleteById(ID id) {
         Entity entity = repository.getOne(id);
         if (isEntityLogicallyDeletable) {
             LogicallyDeletable deletableEntity = ((LogicallyDeletable) entity);
@@ -180,13 +183,13 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
 
     @Transactional
     @Override
-    public void activateById(@NonNull ID id) {
+    public void activateById(ID id) {
         doActivatableOperation(id, true);
     }
 
     @Transactional
     @Override
-    public void deactivateById(@NonNull ID id) {
+    public void deactivateById(ID id) {
         doActivatableOperation(id, false);
     }
 
@@ -236,6 +239,11 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
             Condition notLogicallyDeleted = Objects.requireNonNull(field).eq(false);
             result = result.and(notLogicallyDeleted);
         }
+        if (entityClass.equals(User.class)) {
+            org.jooq.Field<String> field = joinedTable.field("USERNAME", String.class);
+            Condition notSuperAdminUser = Objects.requireNonNull(field).ne(UserDto.PREDEFINED_USER_SUPERADMIN);
+            result = result.and(notSuperAdminUser);
+        }
         return result;
     }
 
@@ -243,7 +251,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         checkUniqueConstraints(dto, null);
     }
 
-    private void checkUniqueConstraints(DTO dto, ID id) {
+    private void checkUniqueConstraints(DTO dto, @Nullable ID id) {
         List<UniqueCheckingAttribute> attrList = findAllUniqueCheckingAttributes(dto);
         attrList.forEach(attr -> doCheckUniqueConstraints(dto, attr.getName(), attr.getFullLabel(), attr.getValue(),
                 attr.getWithInScopeAttribute(), id));
@@ -283,7 +291,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
     }
 
     private void doCheckUniqueConstraints(DTO dto, String attrName, String attrFullLabel, Object attrValue,
-                                          String withInScopeAttribute, ID id) {
+                                          String withInScopeAttribute, @Nullable ID id) {
         PredicateBuilder<Entity> predicateBuilder = Specifications.<Entity>and().eq(attrName, attrValue);
         if (StrUtil.isNotBlank(withInScopeAttribute)) {
             Field withInScopeField = ReflectUtil.getField(dto.getClass(), withInScopeAttribute);
@@ -307,14 +315,14 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
     }
 
     private static <ID extends Serializable, Entity extends Persistable<ID>>
-    void checkReferentialConstraintsBeforeDelete(String label, @NonNull Entity entity) {
+    void checkReferentialConstraintsBeforeDelete(String label, Entity entity) {
         checkReferentialConstraintsBeforeDelete(label, entity, ManyToMany.class);
         checkReferentialConstraintsBeforeDelete(label, entity, OneToMany.class);
         checkReferentialConstraintsBeforeDelete(label, entity, OneToOne.class);
     }
 
     private static <ID extends Serializable, Entity extends Persistable<ID>>
-    void checkReferentialConstraintsBeforeDelete(String label, @NonNull Entity entity, Class<? extends Annotation> annotationType) {
+    void checkReferentialConstraintsBeforeDelete(String label, Entity entity, Class<? extends Annotation> annotationType) {
         List<Field> annotatedFields = JpaUtil.getAnnotatedFieldsByAnnotationType(entity.getClass(), annotationType);
 
         for (Field field : annotatedFields) {
@@ -325,14 +333,16 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
                     if (referencedObj != null) {
                         Class<?> clazz = referencedObj.getClass();
                         String relatedObjLabel = EntityMetaDataMap.get(clazz).getLabel();
-                        throw new EntityDeleteFailureException(label, entity.getId(), 1, relatedObjLabel);
+                        throw new EntityDeleteFailureException(label,
+                                Objects.requireNonNull(entity.getId()), 1, relatedObjLabel);
                     }
                 } else if (annotationType.equals(ManyToMany.class) || annotationType.equals(OneToMany.class)) {
                     Collection<?> coll = (Collection<?>) ReflectUtil.getFieldValue(entity, field);
                     if (coll != null && !coll.isEmpty()) {
                         Class<?> firestElementClass = coll.iterator().next().getClass();
                         String relatedObjLabel = EntityMetaDataMap.get(firestElementClass).getLabel();
-                        throw new EntityDeleteFailureException(label, entity.getId(), coll.size(), relatedObjLabel);
+                        throw new EntityDeleteFailureException(label,
+                                Objects.requireNonNull(entity.getId()), coll.size(), relatedObjLabel);
                     }
                 }
             }

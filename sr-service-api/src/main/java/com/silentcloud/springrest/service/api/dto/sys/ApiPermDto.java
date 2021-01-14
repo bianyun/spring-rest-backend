@@ -38,6 +38,4 @@ public class ApiPermDto extends BaseDto<Long, ApiPerm> {
     @ApiModelProperty(position = 3, value = "子权限")
     private List<ApiPermDto> children;
 
-
-
 }

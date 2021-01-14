@@ -9,4 +9,6 @@ public interface ButtonRepository extends BaseRepository<Long, Button> {
 
     List<Button> findAllByOrderByShowOrder();
 
+    Button findByValue(String value);
+
 }

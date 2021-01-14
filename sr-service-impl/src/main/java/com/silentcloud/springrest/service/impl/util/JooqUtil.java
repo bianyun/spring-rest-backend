@@ -1,5 +1,7 @@
 package com.silentcloud.springrest.service.impl.util;
 
+import com.silentcloud.springrest.model.enums.CountryCode;
+import com.silentcloud.springrest.model.enums.base.EnumConst;
 import com.silentcloud.springrest.service.api.query.response.FlatQueryRecord;
 import lombok.experimental.UtilityClass;
 import org.jooq.*;
@@ -10,6 +12,13 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class JooqUtil {
     public static final String DELIMETER_BETWEEN_TABLE_AND_COLUMN = "__";
+    public static final String DELIMETER_BETWEEN_ENUMCLASS_AND_FIELD = "_#_";
+
+    public static final List<Class<? extends EnumConst<?, ?>>> ENUM_DICT_MAP_BLACK_LIST;
+    static {
+        ENUM_DICT_MAP_BLACK_LIST = new ArrayList<>();
+        ENUM_DICT_MAP_BLACK_LIST.add(CountryCode.class);
+    }
 
     public String buildFieldAlias(Field<?> field) {
         if (field instanceof TableField) {

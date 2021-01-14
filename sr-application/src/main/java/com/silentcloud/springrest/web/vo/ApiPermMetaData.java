@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Set;
 
 @ApiModel("接口权限元数据")
 @Data
@@ -16,6 +15,6 @@ public class ApiPermMetaData {
     private List<String> unsyncedApiPermValues;
 
     @ApiModelProperty(position = 2, value = "接口权限数据")
-    private List<ApiPermDto> apiPermList;
+    private List<ApiPermDto> apiPermTreeData;
 
 }

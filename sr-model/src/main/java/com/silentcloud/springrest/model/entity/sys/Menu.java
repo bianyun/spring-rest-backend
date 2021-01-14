@@ -47,33 +47,4 @@ public class Menu extends AbstractPersistable<Long> {
     @ManyToMany(mappedBy = "menus")
     private Set<Role> roles = new HashSet<>();
 
-    // public void addChild(Menu child) {
-    //     children.add(child);
-    //     child.setParent(this);
-    // }
-    //
-    // public void removeChild(Menu child) {
-    //     children.remove(child);
-    //     child.setParent(null);
-    // }
-    //
-    // public void addButton(Button button) {
-    //     buttons.add(button);
-    //     button.setParentMenu(this);
-    // }
-    //
-    // public void removeButton(Button button) {
-    //     buttons.remove(button);
-    //     button.setParentMenu(null);
-    // }
-    //
-    // public void addApiPerm(ApiPerm apiPerm) {
-    //     apiPerms.add(apiPerm);
-    //     apiPerm.getMenus().add(this);
-    // }
-    //
-    // public void removeApiPerm(ApiPerm apiPerm) {
-    //     apiPerms.remove(apiPerm);
-    //     apiPerm.getMenus().remove(this);
-    // }
 }

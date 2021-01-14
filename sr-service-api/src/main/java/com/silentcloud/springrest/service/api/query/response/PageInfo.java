@@ -3,7 +3,6 @@ package com.silentcloud.springrest.service.api.query.response;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.silentcloud.springrest.service.api.query.request.PageQueryParam;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.NonNull;
 import lombok.Value;
 import org.springframework.data.domain.Page;
 
@@ -46,12 +45,12 @@ public class PageInfo<E> implements Serializable {
         return PageInfo.of(page.getContent(), pageQueryParam, page.getTotalElements()).map(converter);
     }
 
-    public <T> PageInfo<T> map(@NonNull Function<? super E, ? extends T> converter) {
+    public <T> PageInfo<T> map(Function<? super E, ? extends T> converter) {
         List<T> convertedContent = getConvertedContent(converter);
         return new PageInfo<>(convertedContent, getPageQueryParam(), getTotalElements());
     }
 
-    private <T> List<T> getConvertedContent(@NonNull Function<? super E, ? extends T> converter) {
+    private <T> List<T> getConvertedContent(Function<? super E, ? extends T> converter) {
         return this.list.stream().map(converter).collect(Collectors.toList());
     }
 }

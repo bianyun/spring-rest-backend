@@ -3,20 +3,20 @@ package com.silentcloud.springrest.service.api.module.sys;
 import com.silentcloud.springrest.service.api.dto.sys.ApiPermDto;
 import com.silentcloud.springrest.service.api.dto.sys.ButtonDto;
 import com.silentcloud.springrest.service.api.dto.sys.MenuDto;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface MenuService {
     List<MenuDto> findAll();
 
-    MenuDto create(MenuDto dto);
+    void create(MenuDto dto);
 
     void updateById(Long id, MenuDto dto);
 
-    void deleteById(Long aLong);
-
-    MenuDto findById(Long id);
+    void deleteById(Long id);
 
     List<ButtonDto> getButtonsByMenuId(Long menuId);
 
@@ -24,5 +24,10 @@ public interface MenuService {
 
     List<String> getAllMenuPermValuesInDb();
 
+    @Nullable
     MenuDto findByValue(String value);
+
+    Map<String, Set<String>> getMenuToApiPermValuesMap();
+
+    void linkApiPermsToMenu(String menuPermValue, Set<String> apiPermValueSet);
 }

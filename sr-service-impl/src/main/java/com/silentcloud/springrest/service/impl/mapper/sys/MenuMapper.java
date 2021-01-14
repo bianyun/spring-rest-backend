@@ -1,5 +1,6 @@
 package com.silentcloud.springrest.service.impl.mapper.sys;
 
+import com.silentcloud.springrest.model.entity.sys.ApiPerm;
 import com.silentcloud.springrest.model.entity.sys.Menu;
 import com.silentcloud.springrest.repository.sys.MenuRepository;
 import com.silentcloud.springrest.service.api.dto.sys.MenuDto;
@@ -32,6 +33,9 @@ public abstract class MenuMapper {
     @IterableMapping(qualifiedByName = "entityToDto")
     public abstract Set<MenuDto> entitySetToDtoSet(Set<Menu> entitySet);
 
+    @Mapping(target = "parentMenuValue", source = "parent.value")
+    @Mapping(target = "parentMenuName", source = "parent.name")
+    @Mapping(target = "apiPermValues", ignore = true)
     @Mapping(target = "parent", ignore = true)
     abstract MenuDto entityToDto(Menu entity, @Context MenuCycleAvoidingMappingContext context);
 
@@ -46,6 +50,13 @@ public abstract class MenuMapper {
         if (parentMenuDto != null && parentMenuDto.getId() != null) {
             entity.setParent(menuRepository.getOne(parentMenuDto.getId()));
         }
+    }
+
+    @AfterMapping
+    public void doExtraMappings(Menu entity, @MappingTarget MenuDto dto) {
+        Set<String> apiPermValueSet = entity.getApiPerms().stream()
+                .map(ApiPerm::getValue).collect(java.util.stream.Collectors.toSet());
+        dto.setApiPermValues(apiPermValueSet);
     }
 
     static class MenuCycleAvoidingMappingContext extends AbstractCycleAvoidingMappingContext<Long, Menu, MenuDto> {

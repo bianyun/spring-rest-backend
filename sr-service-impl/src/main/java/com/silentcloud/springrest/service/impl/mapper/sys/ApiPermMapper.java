@@ -6,6 +6,7 @@ import com.silentcloud.springrest.service.api.dto.sys.ApiPermDto;
 import com.silentcloud.springrest.service.impl.mapper.AbstractCycleAvoidingMappingContext;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 import java.util.Set;
@@ -31,6 +32,8 @@ public abstract class ApiPermMapper {
     @IterableMapping(qualifiedByName = "entityToDto")
     public abstract Set<ApiPermDto> entitySetToDtoSet(Set<ApiPerm> entityList);
 
+    @Mapping(target = "permLevel", ignore = true)
+    @Nullable
     @Mapping(target = "parent", ignore = true)
     abstract ApiPermDto entityToDto(ApiPerm entity, @Context ApiPermCycleAvoidingMappingContext context);
 

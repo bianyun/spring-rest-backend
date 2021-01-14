@@ -1,5 +1,7 @@
 package com.silentcloud.springrest.service.impl.query.flat;
 
+import cn.hutool.core.util.StrUtil;
+import com.silentcloud.springrest.model.enums.base.EnumConst;
 import com.silentcloud.springrest.service.api.dto.BaseDto;
 import com.silentcloud.springrest.service.api.query.FlatQueryService;
 import com.silentcloud.springrest.service.api.query.parser.QueryConditionExprParser;
@@ -8,6 +10,7 @@ import com.silentcloud.springrest.service.api.query.request.QueryParam;
 import com.silentcloud.springrest.service.api.query.response.FlatQueryRecord;
 import com.silentcloud.springrest.service.api.query.response.PageInfo;
 import com.silentcloud.springrest.service.impl.query.AbstractQueryService;
+import com.silentcloud.springrest.service.impl.util.JooqUtil;
 import com.silentcloud.springrest.service.impl.util.JpaUtil;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,13 +105,22 @@ public class FlatQueryServiceImpl extends AbstractQueryService implements FlatQu
             FlatQueryRecord flatRecord = new FlatQueryRecord();
             IntStream.range(0, record.size()).forEachOrdered(i -> {
                 String fieldName = Objects.requireNonNull(record.field(i)).getName();
-                Object fieldValue = record.getValue(i);
+                Object fieldValue = resolveFieldValue(record.getValue(i));
                 flatRecord.put(fieldName, fieldValue);
             });
             resultList.add(flatRecord);
         }
 
         return resultList;
+    }
+
+    private static Object resolveFieldValue(Object value) {
+        if (value instanceof EnumConst && !JooqUtil.ENUM_DICT_MAP_BLACK_LIST.contains(value.getClass())) {
+            return StrUtil.format("{}{}{}", value.getClass().getSimpleName(),
+                    JooqUtil.DELIMETER_BETWEEN_ENUMCLASS_AND_FIELD, value);
+        } else {
+            return value;
+        }
     }
 
     private <ID extends Serializable, Entity extends Persistable<ID>>

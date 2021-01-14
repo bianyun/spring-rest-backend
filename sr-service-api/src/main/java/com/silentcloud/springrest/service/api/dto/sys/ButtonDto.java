@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -35,6 +36,9 @@ public class ButtonDto extends BaseDto<Long, Button> {
 
     @ApiModelProperty(position = 5, value = "显示顺序")
     private Integer showOrder;
+
+    @ApiModelProperty(position = 6, value = "关联的接口权限值集合")
+    private Set<String> apiPermValues;
 
     @ApiModelProperty(hidden = true)
     private PermType permType = PermType.BUTTON;

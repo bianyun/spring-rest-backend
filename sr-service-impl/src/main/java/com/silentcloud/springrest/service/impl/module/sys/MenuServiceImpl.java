@@ -1,6 +1,9 @@
 package com.silentcloud.springrest.service.impl.module.sys;
 
+import cn.hutool.core.collection.CollUtil;
+import com.silentcloud.springrest.model.entity.sys.ApiPerm;
 import com.silentcloud.springrest.model.entity.sys.Menu;
+import com.silentcloud.springrest.repository.sys.ApiPermRepository;
 import com.silentcloud.springrest.repository.sys.MenuRepository;
 import com.silentcloud.springrest.service.api.dto.sys.ApiPermDto;
 import com.silentcloud.springrest.service.api.dto.sys.ButtonDto;
@@ -9,15 +12,15 @@ import com.silentcloud.springrest.service.api.module.sys.MenuService;
 import com.silentcloud.springrest.service.impl.mapper.sys.ApiPermMapper;
 import com.silentcloud.springrest.service.impl.mapper.sys.ButtonMapper;
 import com.silentcloud.springrest.service.impl.mapper.sys.MenuMapper;
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 
 @Service
 @Transactional(readOnly = true)
@@ -26,16 +29,20 @@ public class MenuServiceImpl implements MenuService {
     private final MenuMapper menuMapper;
     private final ButtonMapper buttonMapper;
     private final ApiPermMapper apiPermMapper;
+    private final ApiPermRepository apiPermRepository;
 
+    @SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "RedundantSuppression"})
     @Autowired
     public MenuServiceImpl(MenuRepository menuRepository,
                            MenuMapper menuMapper,
                            ButtonMapper buttonMapper,
-                           ApiPermMapper apiPermMapper) {
+                           ApiPermMapper apiPermMapper,
+                           ApiPermRepository apiPermRepository) {
         this.menuRepository = menuRepository;
         this.menuMapper = menuMapper;
         this.buttonMapper = buttonMapper;
         this.apiPermMapper = apiPermMapper;
+        this.apiPermRepository = apiPermRepository;
     }
 
     @Override
@@ -45,9 +52,9 @@ public class MenuServiceImpl implements MenuService {
 
     @Transactional
     @Override
-    public MenuDto create(@NonNull MenuDto dto) {
+    public void create(MenuDto dto) {
         Menu savedEntity = menuRepository.save(menuMapper.dtoToEntity(dto));
-        return menuMapper.entityToDto(savedEntity);
+        menuMapper.entityToDto(savedEntity);
     }
 
     @Transactional
@@ -61,17 +68,12 @@ public class MenuServiceImpl implements MenuService {
 
     @Transactional
     @Override
-    public void deleteById(@NonNull Long id) {
+    public void deleteById(Long id) {
         menuRepository.deleteById(id);
     }
 
     @Override
-    public MenuDto findById(@NonNull Long id) {
-        return menuMapper.entityToDto(menuRepository.getOne(id));
-    }
-
-    @Override
-    public List<ButtonDto> getButtonsByMenuId(@NonNull Long menuId) {
+    public List<ButtonDto> getButtonsByMenuId(Long menuId) {
         Menu menu = menuRepository.getOne(menuId);
         return buttonMapper.entityListToDtoList(menu.getButtons());
     }
@@ -91,5 +93,34 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public MenuDto findByValue(String value) {
         return menuMapper.entityToDto(menuRepository.findByValue(value));
+    }
+
+    @Override
+    public Map<String, Set<String>> getMenuToApiPermValuesMap() {
+        List<Menu> allMenus = menuRepository.findAll();
+        Map<String, Set<String>> resultMap = new HashMap<>();
+        allMenus.forEach(menu -> {
+            String menuPermValue = menu.getValue();
+            Set<String> apiPermValueSet = menu.getApiPerms().stream()
+                    .map(ApiPerm::getValue).collect(Collectors.toSet());
+            resultMap.put(menuPermValue, apiPermValueSet);
+        });
+
+        return resultMap;
+    }
+
+    @Transactional
+    @Override
+    public void linkApiPermsToMenu(String menuPermValue, Set<String> apiPermValueSet) {
+        Menu menu = menuRepository.findByValue(menuPermValue);
+        Set<String> apiPermValueSetInDb = menu.getApiPerms().stream()
+                .map(ApiPerm::getValue).collect(Collectors.toSet());
+
+        if (!CollUtil.disjunction(apiPermValueSet, apiPermValueSetInDb).isEmpty()) {
+            Set<ApiPerm> apiPerms = apiPermValueSet.stream()
+                    .map(apiPermRepository::findByValue).collect(Collectors.toSet());
+            menu.setApiPerms(apiPerms);
+            menuRepository.save(menu);
+        }
     }
 }

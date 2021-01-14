@@ -1,6 +1,7 @@
 package com.silentcloud.springrest.web.controller.sys;
 
 import cn.hutool.core.annotation.AnnotationUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -22,6 +23,7 @@ import com.silentcloud.springrest.web.controller.AbstractBaseController;
 import com.silentcloud.springrest.web.shiro.authz.annotation.RequiresPerm;
 import com.silentcloud.springrest.web.util.ApiGroup;
 import com.silentcloud.springrest.web.vo.ApiPermMetaData;
+import com.silentcloud.springrest.web.vo.LinkApiPermValuesToMenuVo;
 import com.silentcloud.springrest.web.vo.MenuPermMetaData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,7 +44,8 @@ import static com.silentcloud.springrest.web.util.Consts.*;
 @RestController
 public class PermController {
     public static final Map<String, String> API_PERM_VALUE_NAME_MAP = new HashMap<>();
-    private final List<ApiPermDto> API_PERM_LIST = buildApiPermList();
+    private static final Set<String> API_PERM_VALUE_SET = new HashSet<>();
+    private static final List<ApiPermDto> API_PERM_LIST = buildApiPermList();
 
     private final ApiPermService apiPermService;
     private final ButtonService buttonService;
@@ -61,9 +65,21 @@ public class PermController {
     @GetMapping("/meta/api")
     public ApiPermMetaData getApiPermMetaData() {
         ApiPermMetaData result = new ApiPermMetaData();
-        result.setApiPermList(API_PERM_LIST);
+        result.setApiPermTreeData(API_PERM_LIST);
         result.setUnsyncedApiPermValues(getUnsyncedApiPermValues());
+
+        // 清理数据库中废弃的接口权限记录（即：value值不在自动计算出的接口权限元数据值列表中的表数据）
+        deleteDeprecatedApiPerms();
         return result;
+    }
+
+    private void deleteDeprecatedApiPerms() {
+        Set<String> apiPermValueSetInDb = apiPermService.findAll().stream()
+                .map(ApiPermDto::getValue).collect(Collectors.toSet());
+
+        Collection<String> apiPermValuesNeedDeleted = CollUtil.disjunction(apiPermValueSetInDb, API_PERM_VALUE_SET);
+
+        apiPermService.deleteApiPermsByValues(apiPermValuesNeedDeleted);
     }
 
     @ApiOperationSupport(order = SUBCLASS_API_OPERATION_ORDER_OFFSET + 1)
@@ -73,7 +89,8 @@ public class PermController {
     public MenuPermMetaData fetchMenuPermMetaData(@RequestBody List<MenuDto> menuPerms) {
         MenuPermMetaData metaData = new MenuPermMetaData();
         metaData.setUnsyncedMenuPermValues(getUnsyncedMenuPermValues(menuPerms));
-        metaData.setMenuToButtonPermsMap(buttonService.getMenuToButtonPermsMap());
+        metaData.setMenuPermValueToButtonPermsMap(buttonService.getMenuToButtonPermsMap());
+        metaData.setMenuPermValueToApiPermValuesMap(menuService.getMenuToApiPermValuesMap());
         return metaData;
     }
 
@@ -147,6 +164,14 @@ public class PermController {
         }
     }
 
+    @ApiOperationSupport(order = SUBCLASS_API_OPERATION_ORDER_OFFSET + 7)
+    @RequiresPerm(name = "菜单关联接口权限", value = API_PERM_PREFIX + "menu:link-api")
+    @ApiOperation("菜单关联接口权限")
+    @PostMapping("/link-api-perms-to-menu")
+    public void linkApiPermsToMenu(@Valid @RequestBody LinkApiPermValuesToMenuVo linkVo) {
+        menuService.linkApiPermsToMenu(linkVo.getMenuPermValue(), linkVo.getApiPermValues());
+    }
+
     private static List<ApiPermDto> buildApiPermList() {
         Comparator<Package> comparator = Comparator.nullsLast(Comparator.comparingInt(PermController::getPackageApiOrder));
         return getModulePackages().stream()
@@ -177,6 +202,8 @@ public class PermController {
         List<ApiPermDto> classLevelPerms = getControllerClassesUnderPackage(pkg).stream()
                 .map(PermController::generateClassLevelApiPerm).collect(Collectors.toList());
         packageLevelPerm.setChildren(classLevelPerms);
+
+        API_PERM_VALUE_SET.add(packageLevelPerm.getValue());
         return packageLevelPerm;
     }
 
@@ -189,12 +216,16 @@ public class PermController {
                 .stream().sorted(comparator).collect(Collectors.toList());
     }
 
+    private static Integer getPackageApiOrder(Package pack) {
+        return AnnotationUtil.getAnnotationValue(pack, ApiGroup.class, "order");
+    }
+
     private static Integer getClassApiOrder(Class<?> clazz) {
         return AnnotationUtil.getAnnotationValue(clazz, ApiSupport.class, "order");
     }
 
-    private static Integer getPackageApiOrder(Package pack) {
-        return AnnotationUtil.getAnnotationValue(pack, ApiGroup.class, "order");
+    private static Integer getMethodApiOrder(Method me) {
+        return AnnotationUtil.getAnnotationValue(me, ApiOperationSupport.class, "order");
     }
 
     private static ApiPermDto generateClassLevelApiPerm(Class<?> controllerClass) {
@@ -204,7 +235,11 @@ public class PermController {
         String permName;
         String[] tags = AnnotationUtil.getAnnotationValue(controllerClass, Api.class, "tags");
         if (tags == null || tags.length == 0 || StrUtil.isBlank(tags[0])) {
-            permName = controllerClass.getSimpleName() + " 管理";
+            String label = LabelUtil.getClassLabel(MiscUtil.getDtoGenericParameterClass(controllerClass));
+            if (StrUtil.isBlank(label)) {
+                label = controllerClass.getSimpleName();
+            }
+            permName = label + " 管理";
         } else {
             permName = tags[0];
         }
@@ -220,27 +255,13 @@ public class PermController {
                 .map(method -> generateMethodLevelApiPerm(permName, method, label, domain))
                 .distinct().collect(Collectors.toList());
         classLevelPerm.setChildren(methodLevelPerms);
+
+        API_PERM_VALUE_SET.add(classLevelPerm.getValue());
         return classLevelPerm;
     }
 
     private static List<Method> getMethodsUnderClass(Class<?> controllerClass) {
-        Comparator<Method> comparator = (method1, method2) -> {
-            Integer order1 = AnnotationUtil.getAnnotationValue(method1, ApiOperationSupport.class, "order");
-            Integer order2 = AnnotationUtil.getAnnotationValue(method2, ApiOperationSupport.class, "order");
-
-            String permValue1 = AnnotationUtil.getAnnotationValue(method1, RequiresPerm.class);
-            String permValue2 = AnnotationUtil.getAnnotationValue(method2, RequiresPerm.class);
-
-            if (order1 == null && order2 == null) {
-                return permValue1.compareTo(permValue2);
-            } else if (order1 != null && order2 != null) {
-                return order1 - order2;
-            } else if (order1 != null) {
-                return -1;
-            } else {
-                return 1;
-            }
-        };
+        Comparator<Method> comparator = Comparator.nullsLast(Comparator.comparingInt(PermController::getMethodApiOrder));
 
         return ReflectUtil.getPublicMethods(controllerClass,
                 method -> AnnotationUtil.hasAnnotation(method, RequiresPerm.class))
@@ -262,6 +283,8 @@ public class PermController {
         methodLevelPerm.setName(permName);
         methodLevelPerm.setValue(permValue);
         methodLevelPerm.setChildren(null);
+
+        API_PERM_VALUE_SET.add(methodLevelPerm.getValue());
         return methodLevelPerm;
     }
 

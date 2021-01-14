@@ -10,8 +10,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "sys_user")
 @Entity
@@ -49,7 +49,7 @@ public class User extends AbstractAuditableEntity implements LogicallyDeletable,
     @JoinTable(name = "sys_user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    private List<Role> roles = new ArrayList<>();
 
     @Override
     public void logicallyDelete() {

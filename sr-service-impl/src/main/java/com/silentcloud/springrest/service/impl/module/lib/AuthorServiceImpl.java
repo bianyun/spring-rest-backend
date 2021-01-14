@@ -15,12 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.silentcloud.springrest.jooq.gen.Tables.LIB_AUTHOR;
 
+@SuppressWarnings({"FieldCanBeLocal", "unused"})
 @Service
 @Transactional(readOnly = true)
 public class AuthorServiceImpl extends AbstractBaseService<Long, Author, AuthorDto> implements AuthorService {
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
 
+    @SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "RedundantSuppression"})
     @Autowired
     public AuthorServiceImpl(DSLContext dsl,
                              AuthorRepository authorRepository,

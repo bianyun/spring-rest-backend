@@ -15,12 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.silentcloud.springrest.jooq.gen.Tables.LIB_PUBLISHER;
 
+@SuppressWarnings({"FieldCanBeLocal", "unused"})
 @Service
 @Transactional(readOnly = true)
 public class PublisherServiceImpl extends AbstractBaseService<Long, Publisher, PublisherDto> implements PublisherService {
     private final PublisherRepository publisherRepository;
     private final PublisherMapper publisherMapper;
 
+    @SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "RedundantSuppression"})
     @Autowired
     public PublisherServiceImpl(DSLContext dsl,
                                 PublisherRepository publisherRepository,

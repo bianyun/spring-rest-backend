@@ -9,7 +9,6 @@ import com.silentcloud.springrest.service.api.module.sys.ButtonService;
 import com.silentcloud.springrest.service.impl.mapper.sys.ApiPermMapper;
 import com.silentcloud.springrest.service.impl.mapper.sys.ButtonMapper;
 import com.silentcloud.springrest.service.impl.module.AbstractBaseService;
-import lombok.NonNull;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Table;
@@ -21,7 +20,6 @@ import java.util.*;
 
 import static com.silentcloud.springrest.jooq.gen.Tables.SYS_BUTTON;
 
-
 @Service
 @Transactional(readOnly = true)
 public class ButtonServiceImpl extends AbstractBaseService<Long, Button, ButtonDto> implements ButtonService {
@@ -29,6 +27,7 @@ public class ButtonServiceImpl extends AbstractBaseService<Long, Button, ButtonD
     private final ButtonMapper buttonMapper;
     private final ApiPermMapper apiPermMapper;
 
+    @SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "RedundantSuppression"})
     @Autowired
     public ButtonServiceImpl(DSLContext dsl,
                              ButtonRepository buttonRepository,
@@ -41,7 +40,7 @@ public class ButtonServiceImpl extends AbstractBaseService<Long, Button, ButtonD
     }
 
     @Override
-    public Set<ApiPermDto> getApiPermsByButtonId(@NonNull Long buttonId) {
+    public Set<ApiPermDto> getApiPermsByButtonId(Long buttonId) {
         Button button = buttonRepository.getOne(buttonId);
         return apiPermMapper.entitySetToDtoSet(button.getApiPerms());
     }

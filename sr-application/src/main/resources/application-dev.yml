@@ -33,3 +33,6 @@ knife4j:
     enableSwaggerModels: false
     enableDocumentManage: false
     enableOpenApi: false
+
+cors:
+  allowed-origin: http://localhost:9527

@@ -13,7 +13,6 @@ import com.silentcloud.springrest.service.api.dto.lib.BookDto;
 import com.silentcloud.springrest.service.api.module.lib.BookService;
 import com.silentcloud.springrest.service.impl.mapper.lib.BookMapper;
 import com.silentcloud.springrest.service.impl.module.AbstractBaseService;
-import lombok.NonNull;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,6 +57,7 @@ public class BookServiceImpl extends AbstractBaseService<Long, Book, BookDto> im
             .leftJoin(translatersGroupByBook).on(LIB_BOOK.ID.eq(translatersGroupByBook.field(LIB_BOOK_TRANSLATER.BOOK_ID)));
 
 
+    @SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "RedundantSuppression"})
     @Autowired
     public BookServiceImpl(DSLContext dsl,
                            BookRepository bookRepository,
@@ -84,19 +84,19 @@ public class BookServiceImpl extends AbstractBaseService<Long, Book, BookDto> im
     }
 
     @Override
-    public List<BookDto> getBooksByPublisherId(@NonNull Long publisherId) {
+    public List<BookDto> getBooksByPublisherId(Long publisherId) {
         Publisher publisher = publisherRepository.getOne(publisherId);
         return bookMapper.entityListToDtoList(publisher.getBooks());
     }
 
     @Override
-    public List<BookDto> getBooksByAuthorId(@NonNull Long authorId) {
+    public List<BookDto> getBooksByAuthorId(Long authorId) {
         Author author = authorRepository.getOne(authorId);
         return bookMapper.entityListToDtoList(author.getBooks());
     }
 
     @Override
-    public List<BookDto> getBooksByTranslaterId(@NonNull Long translaterId) {
+    public List<BookDto> getBooksByTranslaterId(Long translaterId) {
         Translater translater = translaterRepository.getOne(translaterId);
         return bookMapper.entityListToDtoList(translater.getBooks());
     }

@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "cors.allowed-origin",
+      "type": "java.lang.String",
+      "description": "允许跨域访问资源的来源网站."
+  }
+] }

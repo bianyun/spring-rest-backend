@@ -16,7 +16,6 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -54,7 +53,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(IncorrectCredentialsException.class)
-    public ResponseEntity<Object> handleIncorrectCredentialsException(IncorrectCredentialsException ex) {
+    public ResponseEntity<Object> handleIncorrectCredentialsException() {
         ErrorMsg errorMsg = buildErrorMsg("用户认证异常", "用户输入的账号或密码不正确");
         return new ResponseEntity<>(errorMsg, HttpStatus.UNAUTHORIZED);
     }
@@ -100,10 +99,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected @NonNull ResponseEntity<Object> handleMethodArgumentNotValid(@NonNull MethodArgumentNotValidException ex,
-                                                                           @NonNull HttpHeaders headers,
-                                                                           @NonNull HttpStatus status,
-                                                                           @NonNull WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                           HttpHeaders headers,
+                                                                           HttpStatus status,
+                                                                           WebRequest request) {
         BindingResult bindingResult = ex.getBindingResult();
 
         String detailMessage = parseFieldErrorMessage(bindingResult);
@@ -137,7 +136,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                     String fieldFullLabel = LabelUtil.getFieldFullLabel(bindingTargetClass, field);
                     return fieldFullLabel + firstFieldError.getDefaultMessage();
                 } else {
-                    return firstFieldError.getDefaultMessage();
+                    return StrUtil.nullToDefault(firstFieldError.getDefaultMessage(), "");
                 }
             }
         } else {

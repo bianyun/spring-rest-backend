@@ -23,3 +23,5 @@ logging:
     org:
       jooq.Constants: warn
 
+knife4j:
+  enable: false

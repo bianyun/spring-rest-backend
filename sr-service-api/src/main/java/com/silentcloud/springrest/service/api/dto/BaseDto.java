@@ -17,9 +17,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class BaseDto<ID extends Serializable, Entity extends Persistable<ID>> {
 
-    // @JsonBackReference
-    // private final Class<Entity> entityClass = MiscUtil.getEntityGenericParameterClass(getClass());
-
     @Null(groups = Create.class)
     @NotNull(groups = {Update.class, Reference.class})
     @ApiModelProperty(value = "ID")

@@ -28,10 +28,17 @@ public class LabelUtil {
     }
 
     public String getFieldFullLabel(Class<?> clazz, Field field) {
+        String classLabel = getClassLabel(clazz);
+        String fieldLabel = getFieldLabel(field);
+
+        if (classLabel.equals(clazz.getSimpleName())) {
+            return fieldLabel;
+        }
+
         if (useConjunctionBetweenClassAndField) {
-            return getClassLabel(clazz) + conjunctionBetweenClassAndField + getFieldLabel(field);
+            return classLabel + conjunctionBetweenClassAndField + fieldLabel;
         } else {
-            return getClassLabel(clazz) + getFieldLabel(field);
+            return classLabel + fieldLabel;
         }
     }
 

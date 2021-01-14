@@ -1,6 +1,7 @@
 package com.silentcloud.springrest.web.util;
 
 import cn.hutool.core.util.StrUtil;
+import com.silentcloud.springrest.SpringrestApplication;
 
 public abstract class Consts {
 
@@ -13,4 +14,7 @@ public abstract class Consts {
     public static final String PACKAGE_OR_CLASS_LEVEL_API_PERM_TEMPLATE = StrUtil.removeSuffix(API_PERM_PREFIX, ":");
 
     public static final int SUBCLASS_API_OPERATION_ORDER_OFFSET = 50;
+
+    public static final String APP_ROOT_PACKAGE_NAME = SpringrestApplication.class.getPackage().getName();
+
 }

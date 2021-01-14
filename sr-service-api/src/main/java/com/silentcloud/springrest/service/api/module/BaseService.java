@@ -2,6 +2,7 @@ package com.silentcloud.springrest.service.api.module;
 
 import com.silentcloud.springrest.service.api.dto.BaseDto;
 import org.springframework.data.domain.Persistable;
+import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,6 +11,7 @@ public interface BaseService<ID extends Serializable, Entity extends Persistable
 
     boolean existsById(ID id);
 
+    @Nullable
     DTO findById(ID id);
 
     List<DTO> findAll();

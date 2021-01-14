@@ -1,12 +1,10 @@
 package com.silentcloud.springrest.web.vo;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
-@ApiModel("登录信息")
 @Data
 public class LoginFormData {
 

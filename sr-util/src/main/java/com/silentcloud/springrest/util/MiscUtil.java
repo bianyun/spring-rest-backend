@@ -3,7 +3,6 @@ package com.silentcloud.springrest.util;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.lang.annotation.Annotation;
@@ -11,7 +10,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 @UtilityClass
@@ -39,7 +40,7 @@ public class MiscUtil {
         return new RuntimeException(StrUtil.format(messageTemplate, args), cause);
     }
 
-    public <T> T assignDefaultValueIfNull(T value, @NonNull T defaultValue) {
+    public <T> T assignDefaultValueIfNull(T value, T defaultValue) {
         return value == null ? defaultValue : value;
     }
 
@@ -77,6 +78,18 @@ public class MiscUtil {
         String className = controllerClass.getName();
         return StrUtil.subBefore(StrUtil.subAfter(className, "controller.", true), "Controller", false)
                 .toLowerCase().replaceAll("\\.", ":");
+    }
+
+    public static Map<String, Object> getNameFieldMap(Class<? extends Enum<?>> clazz, String fieldName) {
+        final Enum<?>[] enums = clazz.getEnumConstants();
+        if (null == enums) {
+            return null;
+        }
+        final Map<String, Object> map = new LinkedHashMap<>(enums.length);
+        for (Enum<?> e : enums) {
+            map.put(e.name(), ReflectUtil.getFieldValue(e, fieldName));
+        }
+        return map;
     }
 
     private int resolveGenericParamIndex(ParameterizedType parameterizedType, String genericTypeParamName) {

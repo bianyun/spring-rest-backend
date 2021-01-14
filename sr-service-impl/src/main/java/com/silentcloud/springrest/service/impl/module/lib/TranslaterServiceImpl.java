@@ -15,12 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.silentcloud.springrest.jooq.gen.Tables.LIB_TRANSLATER;
 
+@SuppressWarnings({"FieldCanBeLocal", "unused"})
 @Service
 @Transactional(readOnly = true)
 public class TranslaterServiceImpl extends AbstractBaseService<Long, Translater, TranslaterDto> implements TranslaterService {
     private final TranslaterRepository translaterRepository;
     private final TranslaterMapper translaterMapper;
 
+    @SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "RedundantSuppression"})
     @Autowired
     public TranslaterServiceImpl(DSLContext dsl,
                                  TranslaterRepository translaterRepository,

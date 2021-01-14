@@ -29,7 +29,7 @@ public abstract class AbstractActivatableController<ID extends Serializable, Ent
     }
 
     @ApiOperationSupport(order = SUBCLASS_API_OPERATION_ORDER_OFFSET - 2)
-    @RequiresPerm(name = "启用" + PLACEHOLDER_LABEL, value = API_PERM_PREFIX + "activate")
+    @RequiresPerm(name = PLACEHOLDER_LABEL + "启用停用", value = API_PERM_PREFIX + "active-on-off")
     @ApiOperation("启用")
     @ResponseStatus(NO_CONTENT)
     @PostMapping("/{id}/activate")
@@ -42,7 +42,7 @@ public abstract class AbstractActivatableController<ID extends Serializable, Ent
     }
 
     @ApiOperationSupport(order = SUBCLASS_API_OPERATION_ORDER_OFFSET - 1)
-    @RequiresPerm(name = "停用" + PLACEHOLDER_LABEL, value = API_PERM_PREFIX + "deactivate")
+    @RequiresPerm(name = PLACEHOLDER_LABEL + "启用停用", value = API_PERM_PREFIX + "active-on-off")
     @ApiOperation("停用")
     @ResponseStatus(NO_CONTENT)
     @PostMapping("/{id}/deactivate")

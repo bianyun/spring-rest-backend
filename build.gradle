@@ -9,6 +9,7 @@ buildscript {
         shiroVersion = '1.7.0'
         jooqMetaExtensionsVersion = '3.14.4'
         antrl4Version = '4.8-1'
+        googleJsr305Version = '3.0.2'
     }
 }
 
@@ -32,8 +33,6 @@ allprojects {
         mavenCentral()
     }
 
-
-
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
 //        options.compilerArgs = ['-Xlint']
@@ -43,11 +42,6 @@ allprojects {
 subprojects {
     apply plugin: 'java'
 
-    dependencies {
-        implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-        annotationProcessor platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-    }
-
     configurations {
         compileOnly {
             extendsFrom annotationProcessor
@@ -55,9 +49,13 @@ subprojects {
     }
 
     dependencies {
+        implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        annotationProcessor platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
         implementation "cn.hutool:hutool-all:${hutoolVersion}"
+        implementation "com.google.code.findbugs:jsr305:${googleJsr305Version}"
 
         testImplementation('org.springframework.boot:spring-boot-starter-test') {
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

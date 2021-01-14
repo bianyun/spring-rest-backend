@@ -103,7 +103,7 @@ public abstract class AbstractQueryConditionExprParser<T> extends QueryExpressio
             }
         }
 
-        Object value = null;
+        Object value = "LITERAL_NULL";
         if (valueType == ValueType.STRING) {
             value = valueStr;
         } else if (valueType == ValueType.INTEGER) {

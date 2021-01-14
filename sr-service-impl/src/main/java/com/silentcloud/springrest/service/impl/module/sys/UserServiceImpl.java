@@ -1,5 +1,6 @@
 package com.silentcloud.springrest.service.impl.module.sys;
 
+import cn.hutool.core.collection.CollUtil;
 import com.silentcloud.springrest.model.entity.sys.Role;
 import com.silentcloud.springrest.model.entity.sys.User;
 import com.silentcloud.springrest.repository.sys.ButtonRepository;
@@ -11,7 +12,6 @@ import com.silentcloud.springrest.service.api.dto.sys.*;
 import com.silentcloud.springrest.service.api.module.sys.UserService;
 import com.silentcloud.springrest.service.impl.mapper.sys.*;
 import com.silentcloud.springrest.service.impl.module.AbstractBaseService;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -21,12 +21,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.silentcloud.springrest.jooq.gen.Tables.SYS_USER;
 
-
+@SuppressWarnings({"FieldCanBeLocal", "unused"})
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -42,6 +43,7 @@ public class UserServiceImpl extends AbstractBaseService<Long, User, UserDto> im
     private final MenuMapper menuMapper;
     private final ButtonMapper buttonMapper;
 
+    @SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "RedundantSuppression"})
     @Autowired
     public UserServiceImpl(DSLContext dsl,
                            UserRepository userRepository,
@@ -68,32 +70,32 @@ public class UserServiceImpl extends AbstractBaseService<Long, User, UserDto> im
     }
 
     @Override
-    public UserDto findByUsername(@NonNull String username) {
+    public UserDto findByUsername(String username) {
         User user = userRepository.findByUsername(username);
         return userMapper.entityToDto(user);
     }
 
     @Override
-    public UserDto findByEmail(@NonNull String email) {
+    public UserDto findByEmail(String email) {
         User user = userRepository.findByEmail(email);
         return userMapper.entityToDto(user);
     }
 
     @Override
-    public UserDto findByMobile(@NonNull String mobile) {
+    public UserDto findByMobile(String mobile) {
         User user = userRepository.findByMobile(mobile);
         return userMapper.entityToDto(user);
     }
 
     @Override
-    public boolean isPasswordValid(@NonNull Long id, @NonNull String plainPassword) {
+    public boolean isPasswordValid(Long id, String plainPassword) {
         User user = userRepository.getOne(id);
         return passwordEncoder.matches(plainPassword, user.getPassword());
     }
 
     @Transactional
     @Override
-    public void setPasswordById(@NonNull Long id, @NonNull String plainPassword) {
+    public void setPasswordById(Long id, String plainPassword) {
         User user = userRepository.getOne(id);
         String encodedPassword = passwordEncoder.encode(plainPassword);
         user.setPassword(encodedPassword);
@@ -102,19 +104,19 @@ public class UserServiceImpl extends AbstractBaseService<Long, User, UserDto> im
 
     @Transactional
     @Override
-    public void resetPasswordById(@NonNull Long id) {
+    public void resetPasswordById(Long id) {
         setPasswordById(id, UserDto.DEFAULT_PASSWORD);
     }
 
 
     @Override
-    public Set<RoleDto> getRolesByUserId(Long userId) {
+    public List<RoleDto> getRolesByUserId(Long userId) {
         User user = userRepository.getOne(userId);
-        return roleMapper.entitySetToDtoSet(user.getRoles());
+        return roleMapper.entityListToDtoList(user.getRoles());
     }
 
     @Override
-    public Set<ApiPermDto> getApiPermsByUserId(@NonNull Long userId) {
+    public Set<ApiPermDto> getApiPermsByUserId(Long userId) {
         User user = userRepository.getOne(userId);
         Set<ApiPermDto> resultSet = new HashSet<>();
         user.getRoles().forEach(role -> {
@@ -138,8 +140,23 @@ public class UserServiceImpl extends AbstractBaseService<Long, User, UserDto> im
                 .flatMap(Set::stream).map(buttonMapper::entityToDto).collect(Collectors.toSet());
     }
 
+    @Transactional
+    @Override
+    public void saveRoleIdsByUserId(Long id, Set<Long> roleIds) {
+        User user = userRepository.getOne(id);
+        Set<Long> existingRoleIds = user.getRoles().stream().map(Role::getId).collect(Collectors.toSet());
+
+        if (!CollUtil.disjunction(roleIds, existingRoleIds).isEmpty()) {
+            List<Role> roles = roleIds.stream().map(roleRepository::getOne).collect(Collectors.toList());
+            user.setRoles(roles);
+            userRepository.save(user);
+        }
+
+    }
+
     @Override
     protected Table<? extends Record> buildJoinedTable() {
         return SYS_USER;
     }
+
 }
