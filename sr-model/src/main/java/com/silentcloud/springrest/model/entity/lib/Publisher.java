@@ -1,7 +1,7 @@
 package com.silentcloud.springrest.model.entity.lib;
 
 import com.silentcloud.springrest.model.entity.AbstractAuditableEntity;
-import com.silentcloud.springrest.model.enums.CountryCode;
+import com.silentcloud.springrest.model.enums.Country;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -26,7 +26,7 @@ public class Publisher extends AbstractAuditableEntity {
 
     private String zipCode;
 
-    private CountryCode countryCode;
+    private Country country;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

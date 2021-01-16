@@ -1,7 +1,7 @@
 package com.silentcloud.springrest.model.entity.lib;
 
 import com.silentcloud.springrest.model.entity.AbstractAuditableEntity;
-import com.silentcloud.springrest.model.enums.CountryCode;
+import com.silentcloud.springrest.model.enums.Country;
 import com.silentcloud.springrest.model.enums.Gender;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,7 +25,7 @@ public class Author extends AbstractAuditableEntity {
 
     private Gender gender;
 
-    private CountryCode countryCode;
+    private Country country;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

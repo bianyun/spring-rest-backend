@@ -61,6 +61,11 @@ public class LibBook extends TableImpl<LibBookRecord> {
     public final TableField<LibBookRecord, String> TITLE = createField(DSL.name("TITLE"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
+     * The column <code>LIB_BOOK.TRANSLATERS</code>.
+     */
+    public final TableField<LibBookRecord, String> TRANSLATERS = createField(DSL.name("TRANSLATERS"), SQLDataType.VARCHAR(255), this, "");
+
+    /**
      * The column <code>LIB_BOOK.UNIT_PRICE</code>.
      */
     public final TableField<LibBookRecord, Long> UNIT_PRICE = createField(DSL.name("UNIT_PRICE"), SQLDataType.BIGINT, this, "");
@@ -146,11 +151,11 @@ public class LibBook extends TableImpl<LibBookRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, LocalDateTime, LocalDateTime, String, String, Long, Long, Long, Long, Long> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row11<Long, LocalDateTime, LocalDateTime, String, String, String, Long, Long, Long, Long, Long> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

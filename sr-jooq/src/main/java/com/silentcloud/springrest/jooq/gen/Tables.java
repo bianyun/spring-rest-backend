@@ -8,9 +8,9 @@ import com.silentcloud.springrest.jooq.gen.tables.*;
 
 
 /**
- * Convenience access to tables in the default schema.
+ * Convenience access to all tables in the default schema.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
 
     /**
@@ -29,19 +29,9 @@ public class Tables {
     public static final LibBookAuthor LIB_BOOK_AUTHOR = LibBookAuthor.LIB_BOOK_AUTHOR;
 
     /**
-     * The table <code>LIB_BOOK_TRANSLATER</code>.
-     */
-    public static final LibBookTranslater LIB_BOOK_TRANSLATER = LibBookTranslater.LIB_BOOK_TRANSLATER;
-
-    /**
      * The table <code>LIB_PUBLISHER</code>.
      */
     public static final LibPublisher LIB_PUBLISHER = LibPublisher.LIB_PUBLISHER;
-
-    /**
-     * The table <code>LIB_TRANSLATER</code>.
-     */
-    public static final LibTranslater LIB_TRANSLATER = LibTranslater.LIB_TRANSLATER;
 
     /**
      * The table <code>SYS_API_PERM</code>.

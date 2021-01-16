@@ -42,19 +42,9 @@ public class DefaultSchema extends SchemaImpl {
     public final LibBookAuthor LIB_BOOK_AUTHOR = LibBookAuthor.LIB_BOOK_AUTHOR;
 
     /**
-     * The table <code>LIB_BOOK_TRANSLATER</code>.
-     */
-    public final LibBookTranslater LIB_BOOK_TRANSLATER = LibBookTranslater.LIB_BOOK_TRANSLATER;
-
-    /**
      * The table <code>LIB_PUBLISHER</code>.
      */
     public final LibPublisher LIB_PUBLISHER = LibPublisher.LIB_PUBLISHER;
-
-    /**
-     * The table <code>LIB_TRANSLATER</code>.
-     */
-    public final LibTranslater LIB_TRANSLATER = LibTranslater.LIB_TRANSLATER;
 
     /**
      * The table <code>SYS_API_PERM</code>.
@@ -125,9 +115,7 @@ public class DefaultSchema extends SchemaImpl {
             LibAuthor.LIB_AUTHOR,
             LibBook.LIB_BOOK,
             LibBookAuthor.LIB_BOOK_AUTHOR,
-            LibBookTranslater.LIB_BOOK_TRANSLATER,
             LibPublisher.LIB_PUBLISHER,
-            LibTranslater.LIB_TRANSLATER,
             SysApiPerm.SYS_API_PERM,
             SysButton.SYS_BUTTON,
             SysButtonApiPerm.SYS_BUTTON_API_PERM,

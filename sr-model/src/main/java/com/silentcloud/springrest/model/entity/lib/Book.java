@@ -27,6 +27,8 @@ public class Book extends AbstractAuditableEntity {
 
     private Long unitPrice;
 
+    private String translaters;
+
     @ManyToOne(optional = false)
     private Publisher publisher;
 
@@ -36,12 +38,5 @@ public class Book extends AbstractAuditableEntity {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
     private List<Author> authors;
-
-    @EqualsAndHashCode.Exclude
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinTable(name = "lib_book_translater",
-            joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "translater_id"))
-    private List<Translater> translaters;
 
 }

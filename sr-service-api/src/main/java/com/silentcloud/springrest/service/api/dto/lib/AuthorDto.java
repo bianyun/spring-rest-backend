@@ -1,7 +1,7 @@
 package com.silentcloud.springrest.service.api.dto.lib;
 
 import com.silentcloud.springrest.model.entity.lib.Author;
-import com.silentcloud.springrest.model.enums.CountryCode;
+import com.silentcloud.springrest.model.enums.Country;
 import com.silentcloud.springrest.model.enums.Gender;
 import com.silentcloud.springrest.service.api.dto.BaseDto;
 import io.swagger.annotations.ApiModel;
@@ -24,6 +24,6 @@ public class AuthorDto extends BaseDto<Long, Author> {
     private Gender gender;
 
     @ApiModelProperty(position = 3, value = "国家代码", allowableValues = "CN, US, ...")
-    private CountryCode countryCode;
+    private Country country;
 
 }

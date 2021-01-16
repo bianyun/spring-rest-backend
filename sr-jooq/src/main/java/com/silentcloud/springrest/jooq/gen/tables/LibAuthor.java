@@ -6,7 +6,7 @@ package com.silentcloud.springrest.jooq.gen.tables;
 
 import com.silentcloud.springrest.jooq.gen.DefaultSchema;
 import com.silentcloud.springrest.jooq.gen.tables.records.LibAuthorRecord;
-import com.silentcloud.springrest.model.enums.CountryCode;
+import com.silentcloud.springrest.model.enums.Country;
 import com.silentcloud.springrest.model.enums.Gender;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -53,9 +53,9 @@ public class LibAuthor extends TableImpl<LibAuthorRecord> {
     public final TableField<LibAuthorRecord, LocalDateTime> LAST_MODIFIED_TIME = createField(DSL.name("LAST_MODIFIED_TIME"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
-     * The column <code>LIB_AUTHOR.COUNTRY_CODE</code>.
+     * The column <code>LIB_AUTHOR.COUNTRY</code>.
      */
-    public final TableField<LibAuthorRecord, CountryCode> COUNTRY_CODE = createField(DSL.name("COUNTRY_CODE"), SQLDataType.INTEGER, this, "", org.jooq.Converter.of(Integer.class, CountryCode.class, i -> CountryCode.HELPER.byId(i), CountryCode::getId));
+    public final TableField<LibAuthorRecord, Country> COUNTRY = createField(DSL.name("COUNTRY"), SQLDataType.INTEGER, this, "", org.jooq.Converter.of(Integer.class, Country.class, i -> Country.HELPER.byId(i), Country::getId));
 
     /**
      * The column <code>LIB_AUTHOR.GENDER</code>.
@@ -142,7 +142,7 @@ public class LibAuthor extends TableImpl<LibAuthorRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, LocalDateTime, LocalDateTime, CountryCode, Gender, String, Long, Long> fieldsRow() {
+    public Row8<Long, LocalDateTime, LocalDateTime, Country, Gender, String, Long, Long> fieldsRow() {
         return (Row8) super.fieldsRow();
     }
 }

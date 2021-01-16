@@ -48,6 +48,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
+        log.error("参数不合法", ex);
         ErrorMsg errorMsg = buildErrorMsg("参数不合法", ex);
         return new ResponseEntity<>(errorMsg, HttpStatus.INTERNAL_SERVER_ERROR);
     }

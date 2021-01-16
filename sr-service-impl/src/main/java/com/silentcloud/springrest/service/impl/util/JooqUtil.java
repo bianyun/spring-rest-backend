@@ -1,6 +1,6 @@
 package com.silentcloud.springrest.service.impl.util;
 
-import com.silentcloud.springrest.model.enums.CountryCode;
+import com.silentcloud.springrest.model.enums.Country;
 import com.silentcloud.springrest.model.enums.base.EnumConst;
 import com.silentcloud.springrest.service.api.query.response.FlatQueryRecord;
 import lombok.experimental.UtilityClass;
@@ -17,7 +17,7 @@ public class JooqUtil {
     public static final List<Class<? extends EnumConst<?, ?>>> ENUM_DICT_MAP_BLACK_LIST;
     static {
         ENUM_DICT_MAP_BLACK_LIST = new ArrayList<>();
-        ENUM_DICT_MAP_BLACK_LIST.add(CountryCode.class);
+        ENUM_DICT_MAP_BLACK_LIST.add(Country.class);
     }
 
     public String buildFieldAlias(Field<?> field) {

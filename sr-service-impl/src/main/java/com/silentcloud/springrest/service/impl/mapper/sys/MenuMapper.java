@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings({"SpringJavaAutowiredMembersInspection", "RedundantSuppression"})
 @Mapper
 public abstract class MenuMapper {
 

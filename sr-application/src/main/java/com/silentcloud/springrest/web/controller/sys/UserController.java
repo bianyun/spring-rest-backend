@@ -21,8 +21,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.silentcloud.springrest.web.util.Consts.API_PERM_PREFIX;
 import static com.silentcloud.springrest.web.util.Consts.SUBCLASS_API_OPERATION_ORDER_OFFSET;
@@ -56,9 +58,12 @@ public class UserController extends AbstractActivatableController<Long, User, Us
         } else {
             profileVo.setRoles(userService.getRolesByUserId(currentUserId));
 
-            Set<MenuDto> menuPermValues = userService.getMenuPermsByUserId(currentUserId);
-            Set<ButtonDto> btnPermValues = userService.getButtonPermsByUserId(currentUserId);
-            Set<ApiPermDto> apiPermValues = userService.getApiPermsByUserId(currentUserId);
+            List<MenuDto> menuPermValues = userService.getMenuPermsByUserId(currentUserId)
+                    .stream().sorted(Comparator.comparing(MenuDto::getId)).collect(Collectors.toList());
+            List<ButtonDto> btnPermValues = userService.getButtonPermsByUserId(currentUserId)
+                    .stream().sorted(Comparator.comparing(ButtonDto::getId)).collect(Collectors.toList());
+            List<ApiPermDto> apiPermValues = userService.getApiPermsByUserId(currentUserId)
+                    .stream().sorted(Comparator.comparing(ApiPermDto::getId)).collect(Collectors.toList());
 
             profileVo.setMenuPerms(menuPermValues);
             profileVo.setBtnPerms(btnPermValues);

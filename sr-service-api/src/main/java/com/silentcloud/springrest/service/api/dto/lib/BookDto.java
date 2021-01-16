@@ -8,14 +8,10 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.groups.ConvertGroup;
-import java.util.List;
-
-import static com.silentcloud.springrest.service.api.dto.ValidationGroups.*;
+import java.util.Set;
 
 
 @Data
@@ -29,7 +25,7 @@ public class BookDto extends BaseDto<Long, Book> {
     private String isbn;
 
     @NotBlank
-    @Unique(scope = "publisher")
+    @Unique(scope = "publisherId")
     @ApiModelProperty(position = 2, value = "名称", example = "动物农场", required = true)
     private String title;
 
@@ -39,33 +35,15 @@ public class BookDto extends BaseDto<Long, Book> {
     @ApiModelProperty(position = 4, value = "价格", example = "6890")
     private Long unitPrice;
 
+    @ApiModelProperty(position = 5, value = "译者", example = "张三，李四")
+    private String translaters;
+
     @NotNull
-    @ApiModelProperty(position = 5, value = "出版社", required = true)
-    @Valid
-    @ConvertGroup.List({
-            @ConvertGroup(from = Create.class, to = Reference.class),
-            @ConvertGroup(from = Update.class, to = Reference.class),
-            @ConvertGroup(to = Reference.class),
-    })
-    private PublisherDto publisher;
+    @ApiModelProperty(position = 6, value = "出版社ID", required = true)
+    private Long publisherId;
 
     @NotEmpty
-    @Valid
-    @ApiModelProperty(position = 6, value = "作者列表", required = true)
-    @ConvertGroup.List({
-            @ConvertGroup(from = Create.class, to = Reference.class),
-            @ConvertGroup(from = Update.class, to = Reference.class),
-            @ConvertGroup(to = Reference.class),
-    })
-    private List<AuthorDto> authors;
-
-    @ApiModelProperty(position = 7, value = "译者列表")
-    @Valid
-    @ConvertGroup.List({
-            @ConvertGroup(from = Create.class, to = Reference.class),
-            @ConvertGroup(from = Update.class, to = Reference.class),
-            @ConvertGroup(to = Reference.class),
-    })
-    private List<TranslaterDto> translaters;
+    @ApiModelProperty(position = 7, value = "作者ID集合", required = true)
+    private Set<Long> authorIds;
 
 }

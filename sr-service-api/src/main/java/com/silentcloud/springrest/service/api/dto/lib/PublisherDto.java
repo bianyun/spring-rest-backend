@@ -1,8 +1,9 @@
 package com.silentcloud.springrest.service.api.dto.lib;
 
 import com.silentcloud.springrest.model.entity.lib.Publisher;
-import com.silentcloud.springrest.model.enums.CountryCode;
+import com.silentcloud.springrest.model.enums.Country;
 import com.silentcloud.springrest.service.api.dto.BaseDto;
+import com.silentcloud.springrest.service.api.dto.Unique;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,6 +16,7 @@ import javax.validation.constraints.NotBlank;
 @ApiModel("出版社")
 public class PublisherDto extends BaseDto<Long, Publisher> {
 
+    @Unique(scope = "country")
     @NotBlank
     @ApiModelProperty(position = 1, value = "名称", example = "科学出版社", required = true)
     private String name;
@@ -26,6 +28,6 @@ public class PublisherDto extends BaseDto<Long, Publisher> {
     private String zipCode;
 
     @ApiModelProperty(position = 4, value = "国家代码", allowableValues = "CN, US, ...")
-    private CountryCode countryCode;
+    private Country country;
 
 }

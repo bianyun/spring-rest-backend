@@ -6,7 +6,7 @@ package com.silentcloud.springrest.jooq.gen.tables;
 
 import com.silentcloud.springrest.jooq.gen.DefaultSchema;
 import com.silentcloud.springrest.jooq.gen.tables.records.LibPublisherRecord;
-import com.silentcloud.springrest.model.enums.CountryCode;
+import com.silentcloud.springrest.model.enums.Country;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
@@ -57,9 +57,9 @@ public class LibPublisher extends TableImpl<LibPublisherRecord> {
     public final TableField<LibPublisherRecord, String> ADDRESS = createField(DSL.name("ADDRESS"), SQLDataType.VARCHAR(255), this, "");
 
     /**
-     * The column <code>LIB_PUBLISHER.COUNTRY_CODE</code>.
+     * The column <code>LIB_PUBLISHER.COUNTRY</code>.
      */
-    public final TableField<LibPublisherRecord, CountryCode> COUNTRY_CODE = createField(DSL.name("COUNTRY_CODE"), SQLDataType.INTEGER, this, "", org.jooq.Converter.of(Integer.class, CountryCode.class, i -> CountryCode.HELPER.byId(i), CountryCode::getId));
+    public final TableField<LibPublisherRecord, Country> COUNTRY = createField(DSL.name("COUNTRY"), SQLDataType.INTEGER, this, "", org.jooq.Converter.of(Integer.class, Country.class, i -> Country.HELPER.byId(i), Country::getId));
 
     /**
      * The column <code>LIB_PUBLISHER.NAME</code>.
@@ -146,7 +146,7 @@ public class LibPublisher extends TableImpl<LibPublisherRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Long, LocalDateTime, LocalDateTime, String, CountryCode, String, String, Long, Long> fieldsRow() {
+    public Row9<Long, LocalDateTime, LocalDateTime, String, Country, String, String, Long, Long> fieldsRow() {
         return (Row9) super.fieldsRow();
     }
 }

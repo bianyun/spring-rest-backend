@@ -7,6 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+@SuppressWarnings({"SpringJavaAutowiredMembersInspection", "RedundantSuppression"})
 @Mapper
 public abstract class RoleMapper implements BaseMapper<Long, Role, RoleDto> {
 

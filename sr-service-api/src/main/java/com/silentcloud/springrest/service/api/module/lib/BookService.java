@@ -12,6 +12,4 @@ public interface BookService extends BaseService<Long, Book, BookDto> {
 
     List<BookDto> getBooksByAuthorId(Long authorId);
 
-    List<BookDto> getBooksByTranslaterId(Long translaterId);
-
 }

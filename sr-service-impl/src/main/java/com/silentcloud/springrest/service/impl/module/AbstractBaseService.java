@@ -301,6 +301,8 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
             if (withInScopeFieldValue instanceof BaseDto) {
                 Object withInScopeObjId = ((BaseDto<?, ?>) withInScopeFieldValue).getId();
                 predicateBuilder.eq(withInScopeAttribute + ".id", withInScopeObjId);
+            } else if (withInScopeFieldValue instanceof Long && withInScopeAttribute.endsWith("Id")) {
+                predicateBuilder.eq(withInScopeAttribute.replace("Id", ".id"), withInScopeFieldValue);
             } else {
                 predicateBuilder.eq(withInScopeAttribute, withInScopeFieldValue);
             }

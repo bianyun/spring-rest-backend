@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@SuppressWarnings({"SpringJavaAutowiredMembersInspection", "RedundantSuppression"})
 @Mapper
 public abstract class UserMapper implements BaseMapper<Long, User, UserDto> {
 
