@@ -13,9 +13,7 @@ import com.silentcloud.springrest.service.api.module.sys.UserService;
 import com.silentcloud.springrest.service.impl.mapper.sys.*;
 import com.silentcloud.springrest.service.impl.module.AbstractBaseService;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Table;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +23,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.silentcloud.springrest.jooq.gen.Tables.SYS_USER;
+import static com.silentcloud.springrest.jooq.gen.Tables.*;
+import static com.silentcloud.springrest.service.impl.util.JooqUtil.GROUP_FIELDS_SEPARATOR;
+import static org.jooq.impl.DSL.groupConcat;
 
 @SuppressWarnings({"FieldCanBeLocal", "unused"})
 @Slf4j
@@ -42,6 +42,23 @@ public class UserServiceImpl extends AbstractBaseService<Long, User, UserDto> im
     private final RoleMapper roleMapper;
     private final MenuMapper menuMapper;
     private final ButtonMapper buttonMapper;
+
+
+    private final Field<String> rolesName = groupConcat(SYS_ROLE.NAME).orderBy(SYS_ROLE.ID.asc())
+                                                .separator(GROUP_FIELDS_SEPARATOR).as("name");
+    private final Table<? extends Record> rolesGroupByUser =
+            dsl.select(SYS_USER_ROLE.USER_ID, rolesName)
+                    .from(SYS_USER_ROLE)
+                    .join(SYS_ROLE).on(SYS_USER_ROLE.ROLE_ID.eq(SYS_ROLE.ID))
+                    .groupBy(SYS_USER_ROLE.USER_ID)
+                    .asTable("roles");
+
+    private final SelectSelectStep<? extends Record> selectPartSql = dsl.select(rolesGroupByUser.field(rolesName))
+            .select(SYS_USER.fields());
+
+    private final Table<? extends Record> joinedTable = SYS_USER.leftJoin(rolesGroupByUser)
+            .on(SYS_USER.ID.eq(rolesGroupByUser.field(SYS_USER_ROLE.USER_ID)));
+
 
     @SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "RedundantSuppression"})
     @Autowired
@@ -155,8 +172,13 @@ public class UserServiceImpl extends AbstractBaseService<Long, User, UserDto> im
     }
 
     @Override
+    protected SelectSelectStep<? extends Record> buildSelectPartSql() {
+        return selectPartSql;
+    }
+
+    @Override
     protected Table<? extends Record> buildJoinedTable() {
-        return SYS_USER;
+        return joinedTable;
     }
 
 }

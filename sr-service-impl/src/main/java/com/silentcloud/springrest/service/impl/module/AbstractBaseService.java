@@ -13,6 +13,7 @@ import com.silentcloud.springrest.model.entity.LogicallyDeletable;
 import com.silentcloud.springrest.model.entity.sys.User;
 import com.silentcloud.springrest.repository.BaseRepository;
 import com.silentcloud.springrest.service.api.EntityDeleteFailureException;
+import com.silentcloud.springrest.service.api.IllegalServiceOperationException;
 import com.silentcloud.springrest.service.api.LogicallyDeletedEntityActivateFailureException;
 import com.silentcloud.springrest.service.api.UniqueConstraintViolationException;
 import com.silentcloud.springrest.service.api.dto.BaseDto;
@@ -120,7 +121,6 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         return findById(id) != null;
     }
 
-    // @Nullable
     @Override
     public DTO findById(ID id) {
         Entity entity = repository.findOne(buildFindByIdSpec(id)).orElse(null);
@@ -152,6 +152,8 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
 
         checkUniqueConstraints(dto, id);
         Entity entity = repository.getOne(id);
+
+        checkIllegalActionToSuperAdminUser(entity);
         mapper.updateEntityFromDto(dto, entity);
         Entity updatedEntity = repository.save(entity);
         return mapper.entityToDto(updatedEntity);
@@ -162,6 +164,8 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
     public void deleteById(ID id) {
         Entity entity = repository.getOne(id);
         if (isEntityLogicallyDeletable) {
+            checkIllegalActionToSuperAdminUser(entity);
+
             LogicallyDeletable deletableEntity = ((LogicallyDeletable) entity);
             if (deletableEntity.isDeleted()) {
                 return;
@@ -196,6 +200,8 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
     private void doActivatableOperation(ID id, boolean targetActive) {
         Entity entity = repository.getOne(id);
 
+        checkIllegalActionToSuperAdminUser(entity);
+
         if (isEntityActivatable) {
             if (isEntityLogicallyDeletable && ((LogicallyDeletable) entity).isDeleted()) {
                 throw new LogicallyDeletedEntityActivateFailureException(label, id, targetActive ? "启用" : "停用");
@@ -208,6 +214,15 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
             }
         } else {
             throw new UnsupportedOperationException("entity not activatable, activatable operation not supported.");
+        }
+    }
+
+    private void checkIllegalActionToSuperAdminUser(Entity entity) {
+        if (entity instanceof User) {
+            String username = ((User) entity).getUsername();
+            if (username.equals(UserDto.PREDEFINED_USER_SUPERADMIN)) {
+                throw new IllegalServiceOperationException("用户没有权限进行此操作");
+            }
         }
     }
 

@@ -38,6 +38,7 @@ public class MenuDto extends BaseDto<Long, Menu> {
     @ApiModelProperty(position = 4, value = "父亲菜单权限值")
     private String parentMenuValue;
 
+    @JsonBackReference("children-reference")
     @ApiModelProperty(position = 5, value = "子菜单")
     private List<MenuDto> children;
 

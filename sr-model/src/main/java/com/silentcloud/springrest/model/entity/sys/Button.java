@@ -15,7 +15,7 @@ import java.util.Set;
 @Table(name = "sys_button")
 public class Button extends AbstractPersistable<Long> {
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String name;
 
     @Column(unique = true, nullable = false)

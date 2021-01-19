@@ -1,9 +1,11 @@
 package com.silentcloud.springrest.web.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.silentcloud.springrest.model.entity.sys.User;
 import com.silentcloud.springrest.service.api.dto.BaseDto;
 import com.silentcloud.springrest.service.api.dto.ValidationGroups.Create;
 import com.silentcloud.springrest.service.api.dto.ValidationGroups.Update;
+import com.silentcloud.springrest.service.api.dto.sys.UserDto;
 import com.silentcloud.springrest.service.api.module.BaseService;
 import com.silentcloud.springrest.service.api.query.FlatQueryService;
 import com.silentcloud.springrest.service.api.query.JpaQueryService;
@@ -13,12 +15,15 @@ import com.silentcloud.springrest.service.api.query.response.FlatQueryRecord;
 import com.silentcloud.springrest.service.api.query.response.PageInfo;
 import com.silentcloud.springrest.util.LabelUtil;
 import com.silentcloud.springrest.util.MiscUtil;
-import com.silentcloud.springrest.web.IllegalActionTargetResourceException;
+import com.silentcloud.springrest.web.ActionTargetResourceNotFoundException;
+import com.silentcloud.springrest.web.IllegalWebOperationException;
 import com.silentcloud.springrest.web.ResourceNotFoundException;
 import com.silentcloud.springrest.web.shiro.authz.annotation.RequiresPerm;
 import com.silentcloud.springrest.web.shiro.authz.annotation.RequiresPermViewDetail;
 import com.silentcloud.springrest.web.shiro.authz.annotation.RequiresPermViewList;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.data.domain.Persistable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +40,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @Validated
 public abstract class AbstractBaseController<ID extends Serializable,
         Entity extends Persistable<ID>, DTO extends BaseDto<ID, Entity>> {
-    private final Class<Entity> entityClass = MiscUtil.getEntityGenericParameterClass(getClass());
+    protected final Class<Entity> entityClass = MiscUtil.getEntityGenericParameterClass(getClass());
     private final String label = LabelUtil.getClassLabel(MiscUtil.getDtoGenericParameterClass(getClass()));
 
     private final JpaQueryService jpaQueryService;
@@ -87,7 +92,7 @@ public abstract class AbstractBaseController<ID extends Serializable,
         if (service.existsById(id)) {
             return service.updateById(id, dto);
         } else {
-            throw illegalActionTargetResourceException(id, "更新");
+            throw actionTargetResourceNotFoundException(id, "更新");
         }
     }
 
@@ -98,10 +103,20 @@ public abstract class AbstractBaseController<ID extends Serializable,
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable ID id) {
         if (service.existsById(id)) {
+            if (User.class.equals(entityClass)) {
+                if (getCurrentUserId().equals(id)) {
+                    throw new IllegalWebOperationException("不能删除当前登录用户自己的用户账号");
+                }
+            }
             service.deleteById(id);
         } else {
-            throw illegalActionTargetResourceException(id, "删除");
+            throw actionTargetResourceNotFoundException(id, "删除");
         }
+    }
+
+    protected static Long getCurrentUserId() {
+        Subject subject = SecurityUtils.getSubject();
+        return ((UserDto) subject.getPrincipal()).getId();
     }
 
     @ApiOperationSupport(order = 6)
@@ -146,8 +161,8 @@ public abstract class AbstractBaseController<ID extends Serializable,
     }
 
 
-    protected IllegalActionTargetResourceException illegalActionTargetResourceException(ID id, String actionLabel) {
-        return new IllegalActionTargetResourceException(id, label, actionLabel);
+    protected ActionTargetResourceNotFoundException actionTargetResourceNotFoundException(ID id, String actionLabel) {
+        return new ActionTargetResourceNotFoundException(id, label, actionLabel);
     }
 
     protected ResourceNotFoundException resourceNotFoundException(ID id) {

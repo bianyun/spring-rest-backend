@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @ApiModel("用户资料")
@@ -16,13 +17,13 @@ public class UserProfile {
     @ApiModelProperty(position = 2, value = "角色列表")
     private List<RoleDto> roles;
 
-    @ApiModelProperty(position = 3, value = "菜单权限列表")
-    private List<MenuDto> menuPerms;
+    @ApiModelProperty(position = 3, value = "菜单权限集合")
+    private Set<MenuDto> menuPerms;
 
-    @ApiModelProperty(position = 4, value = "按钮权限列表")
-    private List<ButtonDto> btnPerms;
+    @ApiModelProperty(position = 4, value = "按钮权限集合")
+    private Set<ButtonDto> btnPerms;
 
-    @ApiModelProperty(position = 5, value = "接口权限列表")
-    private List<ApiPermDto> apiPerms;
+    @ApiModelProperty(position = 5, value = "接口权限集合")
+    private Set<ApiPermDto> apiPerms;
 
 }

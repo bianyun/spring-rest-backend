@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public class JooqUtil {
     public static final String DELIMETER_BETWEEN_TABLE_AND_COLUMN = "__";
     public static final String DELIMETER_BETWEEN_ENUMCLASS_AND_FIELD = "_#_";
+    public static final String GROUP_FIELDS_SEPARATOR = ", ";
 
     public static final List<Class<? extends EnumConst<?, ?>>> ENUM_DICT_MAP_BLACK_LIST;
     static {

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.silentcloud.springrest.jooq.gen.Tables.*;
+import static com.silentcloud.springrest.service.impl.util.JooqUtil.GROUP_FIELDS_SEPARATOR;
 import static org.jooq.impl.DSL.groupConcat;
 
 @Service
@@ -30,7 +31,8 @@ public class BookServiceImpl extends AbstractBaseService<Long, Book, BookDto> im
     private final PublisherRepository publisherRepository;
     private final AuthorRepository authorRepository;
 
-    private final Field<String> authorsName = groupConcat(LIB_AUTHOR.NAME).orderBy(LIB_AUTHOR.NAME.asc()).separator(",").as("name");
+    private final Field<String> authorsName = groupConcat(LIB_AUTHOR.NAME).orderBy(LIB_AUTHOR.NAME.asc())
+                                                .separator(GROUP_FIELDS_SEPARATOR).as("name");
     private final Table<? extends Record> authorsGroupByBook =
             dsl.select(LIB_BOOK_AUTHOR.BOOK_ID, authorsName)
                     .from(LIB_BOOK_AUTHOR)

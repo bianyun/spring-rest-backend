@@ -92,6 +92,10 @@ public class MiscUtil {
         return map;
     }
 
+    public static <T> T unreachableButCompilerNeedsThis() {
+        throw new AssertionError("this code should never be reached");
+    }
+
     private int resolveGenericParamIndex(ParameterizedType parameterizedType, String genericTypeParamName) {
         Class<?> rawType = ((Class<?>) parameterizedType.getRawType());
         TypeVariable<?>[] typeVars = rawType.getTypeParameters();
@@ -100,4 +104,5 @@ public class MiscUtil {
                 .filter(i -> typeVars[i].getName().equals(genericTypeParamName)).findFirst()
                 .orElseThrow(() -> illegalArgumentException("类[{}] 中没有定义泛型参数[{}]", rawType, genericTypeParamName));
     }
+
  }

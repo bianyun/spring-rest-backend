@@ -26,6 +26,7 @@ public abstract class ButtonMapper implements BaseMapper<Long, Button, ButtonDto
     @Autowired
     private ApiPermRepository apiPermRepository;
 
+    @Mapping(target = "parentMenuId", source = "parentMenu.id")
     @Mapping(target = "permType", ignore = true)
     @Mapping(target = "apiPermValues", ignore = true)
     @Mapping(target = "parentMenuName", source = "parentMenu.name")

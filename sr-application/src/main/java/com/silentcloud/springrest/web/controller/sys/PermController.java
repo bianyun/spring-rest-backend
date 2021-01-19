@@ -18,7 +18,7 @@ import com.silentcloud.springrest.service.api.module.sys.ButtonService;
 import com.silentcloud.springrest.service.api.module.sys.MenuService;
 import com.silentcloud.springrest.util.LabelUtil;
 import com.silentcloud.springrest.util.MiscUtil;
-import com.silentcloud.springrest.web.IllegalActionTargetResourceException;
+import com.silentcloud.springrest.web.ActionTargetResourceNotFoundException;
 import com.silentcloud.springrest.web.controller.AbstractBaseController;
 import com.silentcloud.springrest.web.shiro.authz.annotation.RequiresPerm;
 import com.silentcloud.springrest.web.util.ApiGroup;
@@ -60,7 +60,6 @@ public class PermController {
     }
 
     @ApiOperationSupport(order = SUBCLASS_API_OPERATION_ORDER_OFFSET + 1)
-    @RequiresPerm(name = "获取接口权限元数据", value = API_PERM_PREFIX + "fetch-api-meta")
     @ApiOperation("获取接口权限元数据")
     @GetMapping("/meta/api")
     public ApiPermMetaData getApiPermMetaData() {
@@ -83,7 +82,6 @@ public class PermController {
     }
 
     @ApiOperationSupport(order = SUBCLASS_API_OPERATION_ORDER_OFFSET + 1)
-    @RequiresPerm(name = "获取菜单权限元数据", value = API_PERM_PREFIX + "fetch-menu-meta")
     @ApiOperation("获取菜单权限元数据")
     @PostMapping("/meta/menu")
     public MenuPermMetaData fetchMenuPermMetaData(@RequestBody List<MenuDto> menuPerms) {
@@ -135,6 +133,9 @@ public class PermController {
     @ApiOperation("添加按钮权限")
     @PostMapping("/buttons")
     public void addButtonPerm(@Validated(Create.class) @RequestBody ButtonDto buttonDto) {
+        MenuDto menu = menuService.findByValue(buttonDto.getParentMenuValue());
+        assert menu != null;
+        buttonDto.setParentMenuId(menu.getId());
         buttonService.create(buttonDto);
     }
 
@@ -147,7 +148,7 @@ public class PermController {
         if (buttonService.existsById(id)) {
             buttonService.updateById(id, buttonDto);
         } else {
-            throw new IllegalActionTargetResourceException(id, "按钮权限", "更新");
+            throw new ActionTargetResourceNotFoundException(id, "按钮权限", "更新");
         }
     }
 
@@ -160,7 +161,7 @@ public class PermController {
         if (buttonService.existsById(id)) {
             buttonService.deleteById(id);
         } else {
-            throw new IllegalActionTargetResourceException(id, "按钮权限", "删除");
+            throw new ActionTargetResourceNotFoundException(id, "按钮权限", "删除");
         }
     }
 

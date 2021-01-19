@@ -3,7 +3,8 @@ package com.silentcloud.springrest.web.controller.sys;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.silentcloud.springrest.model.entity.sys.User;
-import com.silentcloud.springrest.service.api.dto.sys.*;
+import com.silentcloud.springrest.service.api.dto.sys.RoleDto;
+import com.silentcloud.springrest.service.api.dto.sys.UserDto;
 import com.silentcloud.springrest.service.api.module.sys.UserService;
 import com.silentcloud.springrest.service.api.query.FlatQueryService;
 import com.silentcloud.springrest.service.api.query.JpaQueryService;
@@ -14,17 +15,13 @@ import com.silentcloud.springrest.web.vo.UpdatePasswordFormData;
 import com.silentcloud.springrest.web.vo.UserProfile;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.silentcloud.springrest.web.util.Consts.API_PERM_PREFIX;
 import static com.silentcloud.springrest.web.util.Consts.SUBCLASS_API_OPERATION_ORDER_OFFSET;
@@ -48,26 +45,20 @@ public class UserController extends AbstractActivatableController<Long, User, Us
     @ApiOperation("获取当前登录用户的资料")
     @GetMapping("/current-user-profile")
     public UserProfile getCurrentUserProfile() {
-        UserDto currentUser = getCurrentUser();
-        Long currentUserId = currentUser.getId();
         UserProfile profileVo = new UserProfile();
+
+        Long currentUserId = getCurrentUserId();
+        UserDto currentUser = userService.findById(currentUserId);
         profileVo.setUser(currentUser);
 
+        assert currentUser != null;
         if (currentUser.getUsername().equals(UserDto.PREDEFINED_USER_SUPERADMIN)) {
             profileVo.setRoles(Collections.singletonList(RoleDto.ROLE_SUPERADMIN));
         } else {
             profileVo.setRoles(userService.getRolesByUserId(currentUserId));
-
-            List<MenuDto> menuPermValues = userService.getMenuPermsByUserId(currentUserId)
-                    .stream().sorted(Comparator.comparing(MenuDto::getId)).collect(Collectors.toList());
-            List<ButtonDto> btnPermValues = userService.getButtonPermsByUserId(currentUserId)
-                    .stream().sorted(Comparator.comparing(ButtonDto::getId)).collect(Collectors.toList());
-            List<ApiPermDto> apiPermValues = userService.getApiPermsByUserId(currentUserId)
-                    .stream().sorted(Comparator.comparing(ApiPermDto::getId)).collect(Collectors.toList());
-
-            profileVo.setMenuPerms(menuPermValues);
-            profileVo.setBtnPerms(btnPermValues);
-            profileVo.setApiPerms(apiPermValues);
+            profileVo.setMenuPerms(userService.getMenuPermsByUserId(currentUserId));
+            profileVo.setBtnPerms(userService.getButtonPermsByUserId(currentUserId));
+            profileVo.setApiPerms(userService.getApiPermsByUserId(currentUserId));
         }
 
         return profileVo;
@@ -81,7 +72,7 @@ public class UserController extends AbstractActivatableController<Long, User, Us
         String oldPassword = formData.getOldPassword();
         String newPassword = formData.getNewPassword();
 
-        Long currentUserId = getCurrentUser().getId();
+        Long currentUserId = getCurrentUserId();
         if (!userService.isPasswordValid(currentUserId, oldPassword)) {
             throw new IllegalArgumentException("用户的原密码不正确");
         }
@@ -105,8 +96,4 @@ public class UserController extends AbstractActivatableController<Long, User, Us
         userService.saveRoleIdsByUserId(id, roleIds);
     }
 
-    private static UserDto getCurrentUser() {
-        Subject subject = SecurityUtils.getSubject();
-        return (UserDto) subject.getPrincipal();
-    }
 }
