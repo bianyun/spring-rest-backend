@@ -1,29 +1,13 @@
-buildscript {
-    ext {
-        springBootVersion = '2.4.1'
-        mapstructVersion = '1.4.1.Final'
-        hutoolVersion = '5.5.6'
-        swaggerAnnotationsVersion = '1.5.22'
-        knife4jVersion = '2.0.8'
-        jpaSpecVersion = '3.2.5'
-        shiroVersion = '1.7.0'
-        jooqMetaExtensionsVersion = '3.14.4'
-        antrl4Version = '4.8-1'
-        googleJsr305Version = '3.0.2'
-    }
-}
 
 plugins {
     id 'org.springframework.boot' version "${springBootVersion}"
-    id 'java'
+//    id 'java'
 }
 
-allprojects {
-    apply plugin: 'io.spring.dependency-management'
 
+allprojects {
     group = 'com.silentcloud'
     version = '0.0.1-SNAPSHOT'
-    sourceCompatibility = '1.8'
 
     repositories {
         maven {
@@ -33,14 +17,17 @@ allprojects {
         mavenCentral()
     }
 
+}
+
+subprojects {
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+    sourceCompatibility = '1.8'
+
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
 //        options.compilerArgs = ['-Xlint']
     }
-}
-
-subprojects {
-    apply plugin: 'java'
 
     configurations {
         compileOnly {

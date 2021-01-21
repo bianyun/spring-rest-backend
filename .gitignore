@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### customzied profile ###
+**/src/main/resources/application-vm*.yml
+**/src/main/resources/application-ecs*.yml

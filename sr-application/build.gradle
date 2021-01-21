@@ -22,3 +22,8 @@ dependencies {
     runtimeOnly 'mysql:mysql-connector-java'
 
 }
+
+bootJar {
+    enabled = true
+    launchScript()
+}

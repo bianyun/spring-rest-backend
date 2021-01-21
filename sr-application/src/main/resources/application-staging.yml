@@ -4,10 +4,10 @@ spring:
     username: sr
     password: sr123
     sqlScriptEncoding: UTF-8
-    initialization-mode: always
+    initialization-mode: never
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
   mvc:
     log-request-details: false
   devtools:
@@ -17,7 +17,7 @@ spring:
       enabled: false
 
 server:
-  port: 8888
+  port: 18807
 
 logging:
   level:
@@ -26,15 +26,15 @@ logging:
     springfox:
       documentation: warn
     org:
-      apache.shiro: debug
+      apache.shiro: info
       jooq: info
 
 knife4j:
-  enable: true
+  enable: false
   setting:
     enableSwaggerModels: false
     enableDocumentManage: false
     enableOpenApi: false
 
 cors:
-  allowed-origin: http://localhost:9527
+  allowed-origin: http://sr.staging-site.com

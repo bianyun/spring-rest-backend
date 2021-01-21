@@ -3,7 +3,6 @@ package com.silentcloud.springrest.web.controller.sys;
 import cn.hutool.core.lang.Filter;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.EnumUtil;
-import cn.hutool.json.JSONUtil;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.silentcloud.springrest.model.enums.Country;
 import com.silentcloud.springrest.model.enums.base.EnumConst;
@@ -79,7 +78,4 @@ public class MiscController {
         return resultList;
     }
 
-    public static void main(String[] args) {
-        System.out.println(JSONUtil.toJsonStr(buildCountryCodeOptions()));
-    }
 }

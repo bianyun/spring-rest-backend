@@ -5,6 +5,7 @@ import com.silentcloud.springrest.web.controller.AbstractBaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +37,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 @Configuration
+@ConditionalOnProperty("knife4j.enable")
 @EnableSwagger2WebMvc
 @Import(BeanValidatorPluginsConfiguration.class)
 public class SwaggerConfig implements WebMvcConfigurer {
@@ -129,6 +131,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .build();
     }
 
+    @ConditionalOnProperty("knife4j.enable")
     @Primary
     @Component
     public static class CustomSwaggerResourceProvider extends InMemorySwaggerResourcesProvider {
