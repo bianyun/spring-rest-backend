@@ -10,6 +10,9 @@ spring:
     deserialization:
       READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE: true
       ACCEPT_EMPTY_STRING_AS_NULL_OBJECT: true
+  cache:
+    caffeine:
+      spec: "maximumSize=500,expireAfterAccess=600s"
 
 server:
   servlet:

@@ -5,16 +5,13 @@ import com.silentcloud.springrest.service.api.dto.sys.ApiPermDto;
 import com.silentcloud.springrest.service.api.dto.sys.RoleDto;
 import com.silentcloud.springrest.service.api.dto.sys.UserDto;
 import com.silentcloud.springrest.service.api.module.sys.UserService;
-import com.silentcloud.springrest.service.impl.util.BeanUtil;
 import com.silentcloud.springrest.web.shiro.authc.PasswordMatcher;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -23,17 +20,11 @@ import java.util.stream.Collectors;
 
 @Component("authorizer")
 public class UserRealm extends AuthorizingRealm {
-    private UserService userService;
+    private final UserService userService;
 
-    public UserRealm(PasswordMatcher matcher) {
+    public UserRealm(PasswordMatcher matcher, @Lazy UserService userService) {
         super(matcher);
-    }
-
-    @SuppressWarnings("unused")
-    @Async
-    @EventListener
-    public void handleContextStart(ApplicationReadyEvent event) {
-        this.userService = BeanUtil.getBean(UserService.class);
+        this.userService = userService;
     }
 
     @Override

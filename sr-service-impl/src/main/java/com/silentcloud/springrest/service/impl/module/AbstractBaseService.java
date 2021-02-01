@@ -31,6 +31,9 @@ import com.silentcloud.springrest.util.MiscUtil;
 import lombok.Value;
 import org.hibernate.Hibernate;
 import org.jooq.*;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.Nullable;
@@ -47,6 +50,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.silentcloud.springrest.model.entity.LogicallyDeletable.DELETED_PROPERTY_NAME;
+import static com.silentcloud.springrest.service.impl.config.CachingConfig.RUNTIME_CACHE_RESOLVER;
 import static com.silentcloud.springrest.util.MiscUtil.illegalArgumentException;
 
 
@@ -121,6 +125,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         return findById(id) != null;
     }
 
+    @Cacheable(cacheResolver = RUNTIME_CACHE_RESOLVER)
     @Override
     public DTO findById(ID id) {
         Entity entity = repository.findOne(buildFindByIdSpec(id)).orElse(null);
@@ -142,6 +147,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         return mapper.entityToDto(savedEntity);
     }
 
+    @CachePut(cacheResolver = RUNTIME_CACHE_RESOLVER, key = "#id")
     @Transactional
     @Override
     public DTO updateById(ID id, DTO dto) {
@@ -159,6 +165,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         return mapper.entityToDto(updatedEntity);
     }
 
+    @CacheEvict(cacheResolver = RUNTIME_CACHE_RESOLVER, key = "#id")
     @Transactional
     @Override
     public void deleteById(ID id) {
@@ -185,12 +192,14 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         }
     }
 
+    @CacheEvict(cacheResolver = RUNTIME_CACHE_RESOLVER, key = "#id")
     @Transactional
     @Override
     public void activateById(ID id) {
         doActivatableOperation(id, true);
     }
 
+    @CacheEvict(cacheResolver = RUNTIME_CACHE_RESOLVER, key = "#id")
     @Transactional
     @Override
     public void deactivateById(ID id) {

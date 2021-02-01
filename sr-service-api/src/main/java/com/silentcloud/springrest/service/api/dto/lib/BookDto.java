@@ -8,11 +8,14 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
+import javax.validation.groups.ConvertGroup;
+import java.util.List;
 
+import static com.silentcloud.springrest.service.api.dto.ValidationGroups.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -25,7 +28,7 @@ public class BookDto extends BaseDto<Long, Book> {
     private String isbn;
 
     @NotBlank
-    @Unique(scope = "publisherId")
+    @Unique(scope = "publisher")
     @ApiModelProperty(position = 2, value = "名称", example = "动物农场", required = true)
     private String title;
 
@@ -39,11 +42,22 @@ public class BookDto extends BaseDto<Long, Book> {
     private String translaters;
 
     @NotNull
-    @ApiModelProperty(position = 6, value = "出版社ID", required = true)
-    private Long publisherId;
+    @ApiModelProperty(position = 5, value = "出版社")
+    @Valid
+    @ConvertGroup.List({
+            @ConvertGroup(from = Create.class, to = Reference.class),
+            @ConvertGroup(from = Update.class, to = Reference.class),
+            @ConvertGroup(to = Reference.class),
+    })
+    private PublisherDto publisher;
 
     @NotEmpty
-    @ApiModelProperty(position = 7, value = "作者ID集合", required = true)
-    private Set<Long> authorIds;
-
+    @Valid
+    @ApiModelProperty(position = 6, value = "作者列表")
+    @ConvertGroup.List({
+            @ConvertGroup(from = Create.class, to = Reference.class),
+            @ConvertGroup(from = Update.class, to = Reference.class),
+            @ConvertGroup(to = Reference.class),
+    })
+    private List<AuthorDto> authors;
 }

@@ -1,6 +1,8 @@
 package com.silentcloud.springrest.web.config;
 
 import com.silentcloud.springrest.web.shiro.intercepter.CustomAuthorizationAttributeSourceAdvisor;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
@@ -11,6 +13,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ShiroConfig {
+
+    @Bean
+    protected CacheManager shiroCacheManager() {
+        return new MemoryConstrainedCacheManager();
+    }
 
     @Bean
     public ShiroFilterChainDefinition shiroFilterChainDefinition() {

@@ -104,18 +104,25 @@ public abstract class AbstractQueryConditionExprParser<T> extends QueryExpressio
         }
 
         Object value = "LITERAL_NULL";
-        if (valueType == ValueType.STRING) {
-            value = valueStr;
-        } else if (valueType == ValueType.INTEGER) {
-            value = Integer.valueOf(valueStr);
-        } else if (valueType == ValueType.LONG) {
-            value = Long.valueOf(valueStr);
-        } else if (valueType == ValueType.DOUBLE) {
-            value = Double.valueOf(valueStr);
-        } else if (valueType == ValueType.BOOLEAN) {
-            value = Boolean.valueOf(valueStr);
-        } else if (valueType == ValueType.FIELD) {
-            value = field(name(valueStr.trim().toLowerCase()));
+        switch (valueType) {
+            case STRING:
+                value = valueStr;
+                break;
+            case INTEGER:
+                value = Integer.valueOf(valueStr);
+                break;
+            case LONG:
+                value = Long.valueOf(valueStr);
+                break;
+            case DOUBLE:
+                value = Double.valueOf(valueStr);
+                break;
+            case BOOLEAN:
+                value = Boolean.valueOf(valueStr);
+                break;
+            case FIELD:
+                value = field(name(valueStr.trim().toLowerCase()));
+                break;
         }
 
         String op = ctx.operator().getText();

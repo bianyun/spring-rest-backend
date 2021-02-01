@@ -5,16 +5,21 @@ import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.github.wenhao.jpa.Specifications;
 import com.silentcloud.springrest.model.entity.LogicallyDeletable;
+import com.silentcloud.springrest.repository.BaseRepository;
+import com.silentcloud.springrest.service.api.ReferencedEntityNotFoundException;
 import com.silentcloud.springrest.service.api.dto.BaseDto;
 import com.silentcloud.springrest.service.api.query.parser.QueryConditionExprParser;
 import com.silentcloud.springrest.service.impl.mapper.BaseMapper;
 import com.silentcloud.springrest.service.impl.meta.EntityMetaData;
 import com.silentcloud.springrest.service.impl.meta.EntityMetaDataMap;
+import com.silentcloud.springrest.service.impl.meta.EntityRepositoryMap;
+import com.silentcloud.springrest.util.LabelUtil;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.TableLike;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -25,6 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public final class JpaUtil {
@@ -54,6 +60,36 @@ public final class JpaUtil {
                 .eq(ENTITY_ID_PROPERTY_NAME, id)
                 .eq(isEntityLogicallyDeletable, LogicallyDeletable.DELETED_PROPERTY_NAME, false)
                 .build();
+    }
+
+    @Nullable
+    public static <ID extends Serializable, DTO extends BaseDto<ID, Entity>, Entity extends Persistable<ID>>
+    Entity getReferencedEntity(@Nullable DTO dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        Class<Entity> entityClass = dto.getEntityClass();
+        ID id = dto.getId();
+        String label = LabelUtil.getClassLabel(dto.getClass());
+        Specification<Entity> findByIdSpec = buildFindByIdSpec(entityClass, id);
+        BaseRepository<ID, Entity> repository = EntityRepositoryMap.getRepository(entityClass);
+        return repository.findOne(findByIdSpec).orElseThrow(() -> new ReferencedEntityNotFoundException(label, id));
+    }
+
+    public static <ID extends Serializable, DTO extends BaseDto<ID, Entity>, Entity extends Persistable<ID>>
+    List<Entity> getReferencedEntities(@Nullable List<DTO> dtos) {
+        if (dtos == null || dtos.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Class<Entity> entityClass = dtos.get(0).getEntityClass();
+        String label = LabelUtil.getClassLabel(dtos.get(0).getClass());
+        BaseRepository<ID, Entity> repository = EntityRepositoryMap.getRepository(entityClass);
+        return dtos.stream().map(dto -> repository
+                .findOne(buildFindByIdSpec(entityClass, dto.getId()))
+                .orElseThrow(() -> new ReferencedEntityNotFoundException(label, dto.getId())
+                )).collect(Collectors.toList());
     }
 
     public static List<Field> getAnnotatedFieldsByAnnotationType(Class<?> clazz, Class<? extends Annotation> annotationType) {
