@@ -37,4 +37,4 @@ knife4j:
     enableOpenApi: false
 
 cors:
-  allowed-origins: http://sr.staging-site.com
+  allowed-origins: http://sr.staging-site.com, https://sr.staging-site.com
