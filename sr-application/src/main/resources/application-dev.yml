@@ -39,4 +39,4 @@ knife4j:
     enableOpenApi: false
 
 cors:
-  allowed-origin: http://localhost:9527
+  allowed-origins: http://localhost:9527, http://localhost.com:9527
