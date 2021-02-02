@@ -2,7 +2,7 @@
 
 ## 简介
 
-本项目是基于 SpringBoot, Spring Data JPA, Shiro, Jooq, MapStruct 等框架搭建的 RESTful 风格的 Web 管理系统后台。主要优化了权限管理模块和复杂查询模块。需要与管理台前端项目 [Spring-Rest Admin](https://github.com/bianyun1981/spring-rest-admin) 搭配使用。
+本项目是基于 SpringBoot, Spring Data JPA, Shiro, Jooq, MapStruct 等框架搭建的 RESTful 风格的 Web 管理系统后台。主要优化了权限管理模块和复杂查询模块。需要与管理台前端项目 [Spring-Rest Admin](https://github.com/bianyun1981/spring-rest-admin) 搭配使用，[**点此处进入在线演示**](https://wisecoder.work)。
 
 ## 主要优化点
 
