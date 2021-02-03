@@ -114,18 +114,13 @@ public abstract class AbstractBaseController<ID extends Serializable,
         }
     }
 
-    protected static Long getCurrentUserId() {
-        Subject subject = SecurityUtils.getSubject();
-        return ((UserDto) subject.getPrincipal()).getId();
-    }
-
     @ApiOperationSupport(order = 6)
     @RequiresPerm(name = "批量删除" + PLACEHOLDER_LABEL, value = API_PERM_PREFIX + "batch-delete")
     @ApiOperation("批量删除")
     @ResponseStatus(NO_CONTENT)
     @DeleteMapping("/batch")
     public void batchDeleteByIdSet(@RequestBody Set<ID> idSet) {
-        idSet.forEach(this::deleteById);
+        service.batchDeleteByIdSet(idSet);
     }
 
     @RequiresPermViewList
@@ -160,6 +155,15 @@ public abstract class AbstractBaseController<ID extends Serializable,
         return flatQueryService.pageQuery(entityClass, pageQueryParam);
     }
 
+    protected static String getCurrentUsername() {
+        Subject subject = SecurityUtils.getSubject();
+        return ((UserDto) subject.getPrincipal()).getUsername();
+    }
+
+    protected static Long getCurrentUserId() {
+        Subject subject = SecurityUtils.getSubject();
+        return ((UserDto) subject.getPrincipal()).getId();
+    }
 
     protected ActionTargetResourceNotFoundException actionTargetResourceNotFoundException(ID id, String actionLabel) {
         return new ActionTargetResourceNotFoundException(id, label, actionLabel);

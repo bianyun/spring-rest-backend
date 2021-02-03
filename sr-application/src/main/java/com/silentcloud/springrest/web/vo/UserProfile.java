@@ -26,4 +26,10 @@ public class UserProfile {
     @ApiModelProperty(position = 5, value = "接口权限集合")
     private Set<ApiPermDto> apiPerms;
 
+    @ApiModelProperty(position = 6, value = "演示模式是否开启")
+    private boolean demoModeEnabled;
+
+    @ApiModelProperty(position = 7, value = "演示模式内置演示用户列表")
+    private List<String> demoPreservedUsers;
+
 }

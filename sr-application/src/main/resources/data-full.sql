@@ -8,7 +8,7 @@ VALUES (1, '2021-01-08 10:00:00.0', '2021-01-19 23:52:01.086', 1, 0, 'superadmin
      , (2, '2021-01-08 10:00:00.0', '2021-01-19 23:52:44.254', 1, 0, 'admin@qq.com', 1, NULL, '风流盲侠', '$2a$10$IaynXehgA6NHOurIcsiof.I69a.0I/OaSxxF.k6xBJRDM4UQbUATG', NULL, '花满楼', 'admin', 1, 1)
      , (3, '2021-01-08 10:00:00.0', '2021-01-19 22:01:01.761', 1, 0, 'user@qq.com', 1, NULL, '冷如冰寒如雪', '$2a$10$gScvF8GErqQTqvQqa8ZjIOh8Tsp0lnhVPPdMyOMKPb7NCdgXU3FgC', NULL, '西门吹雪', 'user', 1, 1)
      , (4, '2021-01-19 18:07:00.14', '2021-01-19 20:38:44.745', 1, 0, 'yegucheng@163.com', 1, NULL, '白云城主', '$2a$10$2gnuRabSeHaOJYbQKDDoyu2e8V7D.GUndwYKuAztSwKPUPoikRsXy', NULL, '叶孤城', 'yegc', 1, 1)
-     , (5, '2021-01-19 21:06:39.878', '2021-01-19 21:46:58.295', 1, 0, 'huamanlou@qq.com', 3, NULL, '小李探花', '$2a$10$6Tc9m1N5NUVqj4irBW4fquRAxV4ymGWUi0X1kHYVtexrkVcJZ21Jm', NULL, '李寻欢', 'lixf', 1, 1)
+     , (5, '2021-01-19 21:06:39.878', '2021-01-19 21:46:58.295', 1, 0, 'huamanlou@qq.com', 3, NULL, '小李探花', '$2a$10$6Tc9m1N5NUVqj4irBW4fquRAxV4ymGWUi0X1kHYVtexrkVcJZ21Jm', NULL, '李寻欢', 'lixh', 1, 1)
      , (6, '2021-01-19 21:41:38.833', '2021-01-19 21:44:27.805', 1, 0, 'luxiaofeng@qq.com', 3, NULL, '四条眉毛', '$2a$10$FBH2zPKGiGyjsCwKdoyN.eHNk.rUpp2KcRcVQQXM7aWPFRbdy/ZIS', NULL, '陆小凤', 'luxf', 1, 1)
      , (7, '2021-01-19 21:57:39.748', '2021-01-19 22:00:21.081', 1, 0, 'linglingfa@qq.com', 3, NULL, '大内密探', '$2a$10$G8FpI6cMJyh0aVp4A4eyheOa1QfnmnlsijKRfkOr.eb2lbnvXzjeO', NULL, '零零发', 'linglf', 1, 1)
 ;

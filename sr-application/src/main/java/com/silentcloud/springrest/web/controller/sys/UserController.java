@@ -8,6 +8,7 @@ import com.silentcloud.springrest.service.api.dto.sys.UserDto;
 import com.silentcloud.springrest.service.api.module.sys.UserService;
 import com.silentcloud.springrest.service.api.query.FlatQueryService;
 import com.silentcloud.springrest.service.api.query.JpaQueryService;
+import com.silentcloud.springrest.web.IllegalWebOperationException;
 import com.silentcloud.springrest.web.controller.AbstractActivatableController;
 import com.silentcloud.springrest.web.shiro.authz.annotation.RequiresPerm;
 import com.silentcloud.springrest.web.shiro.authz.annotation.RequiresPermViewDetail;
@@ -16,6 +17,7 @@ import com.silentcloud.springrest.web.vo.UserProfile;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +34,12 @@ import static com.silentcloud.springrest.web.util.Consts.SUBCLASS_API_OPERATION_
 @RestController
 public class UserController extends AbstractActivatableController<Long, User, UserDto> {
     private final UserService userService;
+
+    @Value("${demo-mode.enabled:false}")
+    private boolean demoModeEnabled;
+
+    @Value("#{'${demo-mode.preserved-users:}'.split('\\s*,\\s*')}")
+    private List<String> demoPreservedUsers;
 
     @Autowired
     public UserController(JpaQueryService jpaQueryService,
@@ -60,6 +68,8 @@ public class UserController extends AbstractActivatableController<Long, User, Us
             profileVo.setBtnPerms(userService.getButtonPermsByUserId(currentUserId));
             profileVo.setApiPerms(userService.getApiPermsByUserId(currentUserId));
         }
+        profileVo.setDemoModeEnabled(demoModeEnabled);
+        profileVo.setDemoPreservedUsers(demoPreservedUsers);
 
         return profileVo;
     }
@@ -71,6 +81,8 @@ public class UserController extends AbstractActivatableController<Long, User, Us
     public void updatePasswordForCurrentUser(@RequestBody UpdatePasswordFormData formData) {
         String oldPassword = formData.getOldPassword();
         String newPassword = formData.getNewPassword();
+
+        checkDemoModeOperation(getCurrentUsername(), "修改内置演示用户的密码");
 
         Long currentUserId = getCurrentUserId();
         if (!userService.isPasswordValid(currentUserId, oldPassword)) {
@@ -93,7 +105,24 @@ public class UserController extends AbstractActivatableController<Long, User, Us
     @ApiOperation("保存用户分配的角色")
     @PutMapping("/{id}/roles")
     public void saveAssignedRolesByUserId(@PathVariable Long id, @RequestBody Set<Long> roleIds) {
+        checkDemoModeOperation(id, "修改内置演示用户分配的角色");
+
         userService.saveRoleIdsByUserId(id, roleIds);
     }
 
+    private void checkDemoModeOperation(String targetUsername, String operationDesc) {
+        if (demoModeEnabled && demoPreservedUsers.contains(targetUsername)) {
+            throw new IllegalWebOperationException("当前处于演示模式，不能" + operationDesc);
+        }
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private void checkDemoModeOperation(Long targetUserId, String operationDesc) {
+        if (demoModeEnabled) {
+            UserDto user = userService.findById(targetUserId);
+            if (user != null && demoPreservedUsers.contains(user.getUsername())) {
+                checkDemoModeOperation(user.getUsername(), operationDesc);
+            }
+        }
+    }
 }

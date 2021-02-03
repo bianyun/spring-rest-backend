@@ -6,6 +6,7 @@ import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 public interface BaseService<ID extends Serializable, Entity extends Persistable<ID>, DTO extends BaseDto<ID, Entity>> {
 
@@ -21,6 +22,8 @@ public interface BaseService<ID extends Serializable, Entity extends Persistable
     DTO updateById(ID id, DTO dto);
 
     void deleteById(ID id);
+
+    void batchDeleteByIdSet(Set<ID> idSet);
 
     void activateById(ID id);
 

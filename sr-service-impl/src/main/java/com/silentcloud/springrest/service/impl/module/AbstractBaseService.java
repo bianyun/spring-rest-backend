@@ -12,10 +12,7 @@ import com.silentcloud.springrest.model.entity.Activatable;
 import com.silentcloud.springrest.model.entity.LogicallyDeletable;
 import com.silentcloud.springrest.model.entity.sys.User;
 import com.silentcloud.springrest.repository.BaseRepository;
-import com.silentcloud.springrest.service.api.EntityDeleteFailureException;
-import com.silentcloud.springrest.service.api.IllegalServiceOperationException;
-import com.silentcloud.springrest.service.api.LogicallyDeletedEntityActivateFailureException;
-import com.silentcloud.springrest.service.api.UniqueConstraintViolationException;
+import com.silentcloud.springrest.service.api.*;
 import com.silentcloud.springrest.service.api.dto.BaseDto;
 import com.silentcloud.springrest.service.api.dto.Unique;
 import com.silentcloud.springrest.service.api.dto.sys.UserDto;
@@ -28,9 +25,9 @@ import com.silentcloud.springrest.service.impl.util.JooqUtil;
 import com.silentcloud.springrest.service.impl.util.JpaUtil;
 import com.silentcloud.springrest.util.LabelUtil;
 import com.silentcloud.springrest.util.MiscUtil;
-import lombok.Value;
 import org.hibernate.Hibernate;
 import org.jooq.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -69,6 +66,12 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
     private final boolean isEntityLogicallyDeletable;
     private final boolean isEntityActivatable;
     private final Specification<Entity> specForNotLogicallyDeleted;
+
+    @Value("${demo-mode.enabled:false}")
+    private boolean demoModeEnabled;
+
+    @Value("#{'${demo-mode.preserved-users:}'.split('\\s*,\\s*')}")
+    private List<String> demoPreservedUsers;
 
     {
         Class<DTO> dtoClass = MiscUtil.getDtoGenericParameterClass(getClass());
@@ -159,7 +162,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         checkUniqueConstraints(dto, id);
         Entity entity = repository.getOne(id);
 
-        checkIllegalActionToSuperAdminUser(entity);
+        checkIllegalAction(entity);
         mapper.updateEntityFromDto(dto, entity);
         Entity updatedEntity = repository.save(entity);
         return mapper.entityToDto(updatedEntity);
@@ -171,7 +174,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
     public void deleteById(ID id) {
         Entity entity = repository.getOne(id);
         if (isEntityLogicallyDeletable) {
-            checkIllegalActionToSuperAdminUser(entity);
+            checkIllegalAction(entity);
 
             LogicallyDeletable deletableEntity = ((LogicallyDeletable) entity);
             if (deletableEntity.isDeleted()) {
@@ -192,6 +195,26 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         }
     }
 
+    @Transactional
+    @Override
+    public void batchDeleteByIdSet(Set<ID> ids) {
+        Map<String, List<Object>> exceptionMap = new HashMap<>();
+        for (ID id : ids) {
+            try {
+                deleteById(id);
+            } catch (CustomServiceLayerException e) {
+                String errorMsg = e.getErrorMsg().getMessage();
+                exceptionMap.computeIfAbsent(errorMsg, k -> new ArrayList<>());
+                exceptionMap.get(errorMsg).add(id);
+            } catch (Exception e) {
+                String errorMsg = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+                exceptionMap.computeIfAbsent(errorMsg, k -> new ArrayList<>());
+                exceptionMap.get(errorMsg).add(id);
+            }
+        }
+        throw new EntityBatchDeleteFailureException(label, exceptionMap);
+    }
+
     @CacheEvict(cacheResolver = RUNTIME_CACHE_RESOLVER, key = "#id")
     @Transactional
     @Override
@@ -209,7 +232,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
     private void doActivatableOperation(ID id, boolean targetActive) {
         Entity entity = repository.getOne(id);
 
-        checkIllegalActionToSuperAdminUser(entity);
+        checkIllegalAction(entity);
 
         if (isEntityActivatable) {
             if (isEntityLogicallyDeletable && ((LogicallyDeletable) entity).isDeleted()) {
@@ -226,11 +249,15 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         }
     }
 
-    private void checkIllegalActionToSuperAdminUser(Entity entity) {
+    private void checkIllegalAction(Entity entity) {
         if (entity instanceof User) {
             String username = ((User) entity).getUsername();
             if (username.equals(UserDto.PREDEFINED_USER_SUPERADMIN)) {
                 throw new IllegalServiceOperationException("用户没有权限进行此操作");
+            }
+
+            if (demoModeEnabled && demoPreservedUsers.contains(username)) {
+                throw new IllegalServiceOperationException("当前处于演示模式，不能对内置演示用户进行此操作");
             }
         }
     }
@@ -375,7 +402,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         }
     }
 
-    @Value(staticConstructor = "of")
+    @lombok.Value(staticConstructor = "of")
     private static class UniqueCheckingAttribute {
         String name;
         String fullLabel;

@@ -4,6 +4,16 @@
       "name": "cors.allowed-origins",
       "type": "java.lang.String",
       "description": "允许跨域访问资源的来源网站."
+    },
+    {
+      "name": "demo-mode.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否开启演示模式."
+    },
+    {
+      "name": "demo-mode.preserved-users",
+      "type": "java.lang.String",
+      "description": "演示模式下的保留用户（禁止对这些用户做删除、修改密码等操作）."
     }
   ]
 }
