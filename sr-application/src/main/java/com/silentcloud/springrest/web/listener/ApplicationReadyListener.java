@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationReadyListener {
 
+    @SuppressWarnings("unused")
     @Async
     @EventListener
     public void handleContextStart(ApplicationReadyEvent event) {

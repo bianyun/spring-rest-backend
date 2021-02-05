@@ -20,7 +20,7 @@ dependencies {
     implementation "org.apache.shiro:shiro-spring-boot-web-starter:${shiroVersion}"
 
     runtimeOnly 'mysql:mysql-connector-java'
-
+    runtimeOnly 'com.github.ben-manes.caffeine:caffeine'
 }
 
 bootJar {

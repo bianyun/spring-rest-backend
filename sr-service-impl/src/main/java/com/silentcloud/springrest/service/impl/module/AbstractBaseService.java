@@ -21,6 +21,7 @@ import com.silentcloud.springrest.service.impl.mapper.BaseMapper;
 import com.silentcloud.springrest.service.impl.meta.EntityMetaData;
 import com.silentcloud.springrest.service.impl.meta.EntityMetaDataMap;
 import com.silentcloud.springrest.service.impl.query.flat.FlatQueryConditionExprParser;
+import com.silentcloud.springrest.service.impl.util.BeanUtil;
 import com.silentcloud.springrest.service.impl.util.JooqUtil;
 import com.silentcloud.springrest.service.impl.util.JpaUtil;
 import com.silentcloud.springrest.util.LabelUtil;
@@ -28,6 +29,8 @@ import com.silentcloud.springrest.util.MiscUtil;
 import org.hibernate.Hibernate;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -212,7 +215,16 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
                 exceptionMap.get(errorMsg).add(id);
             }
         }
-        throw new EntityBatchDeleteFailureException(label, exceptionMap);
+        if (!exceptionMap.isEmpty()) {
+            throw new EntityBatchDeleteFailureException(label, exceptionMap);
+        } else {
+            CacheManager cacheManager = BeanUtil.getBean(CacheManager.class);
+            Cache cache = cacheManager.getCache(getClass().getName());
+
+            if (cache != null) {
+                ids.forEach(cache::evictIfPresent);
+            }
+        }
     }
 
     @CacheEvict(cacheResolver = RUNTIME_CACHE_RESOLVER, key = "#id")
