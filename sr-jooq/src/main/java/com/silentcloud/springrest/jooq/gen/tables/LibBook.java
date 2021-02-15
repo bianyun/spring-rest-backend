@@ -11,6 +11,7 @@ import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -54,6 +55,11 @@ public class LibBook extends TableImpl<LibBookRecord> {
      * The column <code>LIB_BOOK.ISBN</code>.
      */
     public final TableField<LibBookRecord, String> ISBN = createField(DSL.name("ISBN"), SQLDataType.VARCHAR(255).nullable(false), this, "");
+
+    /**
+     * The column <code>LIB_BOOK.PUBLISH_DATE</code>.
+     */
+    public final TableField<LibBookRecord, LocalDate> PUBLISH_DATE = createField(DSL.name("PUBLISH_DATE"), SQLDataType.LOCALDATE, this, "");
 
     /**
      * The column <code>LIB_BOOK.TITLE</code>.
@@ -151,11 +157,11 @@ public class LibBook extends TableImpl<LibBookRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Long, LocalDateTime, LocalDateTime, String, String, String, Long, Long, Long, Long, Long> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row12<Long, LocalDateTime, LocalDateTime, String, LocalDate, String, String, Long, Long, Long, Long, Long> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 }

@@ -1,4 +1,4 @@
-// Generated from D:/Code/IdeaProjects/PersonalCode/demo/springboot-rest/sr-service-impl/src/main/resources\QueryExpression.g4 by ANTLR 4.8
+// Generated from D:/Code/IdeaProjects/PersonalCode/action/spring-rest/sr-service-impl/src/main/resources\QueryExpression.g4 by ANTLR 4.8
 package com.silentcloud.springrest.service.impl.query.antlr.gen;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 

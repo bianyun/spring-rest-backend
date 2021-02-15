@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -28,6 +29,8 @@ public class Book extends AbstractAuditableEntity {
     private Long unitPrice;
 
     private String translaters;
+
+    private LocalDate publishDate;
 
     @ManyToOne(optional = false)
     private Publisher publisher;
