@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 @Entity
@@ -30,7 +30,8 @@ public class Book extends AbstractAuditableEntity {
 
     private String translaters;
 
-    private LocalDate publishDate;
+    @Column(columnDefinition = "mediumint")
+    private YearMonth publishedOn;
 
     @ManyToOne(optional = false)
     private Publisher publisher;

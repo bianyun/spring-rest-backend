@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.groups.ConvertGroup;
-import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 import static com.silentcloud.springrest.service.api.dto.ValidationGroups.*;
@@ -42,8 +42,8 @@ public class BookDto extends BaseDto<Long, Book> {
     @ApiModelProperty(position = 5, value = "译者", example = "张三，李四")
     private String translaters;
 
-    @ApiModelProperty(position = 6, value = "出版日期", example = "2021-01-18")
-    private LocalDate publishDate;
+    @ApiModelProperty(position = 6, value = "出版时间", example = "2021-01")
+    private YearMonth publishedOn;
 
     @NotNull
     @ApiModelProperty(position = 7, value = "出版社")
