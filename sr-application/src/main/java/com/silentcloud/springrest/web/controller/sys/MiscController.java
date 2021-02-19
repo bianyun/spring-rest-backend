@@ -8,7 +8,7 @@ import com.silentcloud.springrest.model.enums.Country;
 import com.silentcloud.springrest.model.enums.base.EnumConst;
 import com.silentcloud.springrest.service.impl.util.JooqUtil;
 import com.silentcloud.springrest.util.MiscUtil;
-import com.silentcloud.springrest.web.vo.misc.EnumLabelNameMap;
+import com.silentcloud.springrest.web.vo.misc.EnumMetaMap;
 import com.silentcloud.springrest.web.vo.misc.SelectOption;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,12 +29,12 @@ import static com.silentcloud.springrest.web.util.Consts.APP_ROOT_PACKAGE_NAME;
 @RequestMapping("/sys/misc")
 @RestController
 public class MiscController {
-    private static final EnumLabelNameMap ENUM_LABEL_NAME_MAP = buildEnumLabelNameMap();
+    private static final EnumMetaMap ENUM_LABEL_NAME_MAP = buildEnumLabelNameMap();
     private static final List<SelectOption> COUNTRY_CODE_OPTIONS = buildCountryCodeOptions();
 
     @ApiOperation("获取枚举类的字段名称映射表")
     @GetMapping("/enum-label-name-map")
-    public EnumLabelNameMap getEnumLabelNameMap() {
+    public EnumMetaMap getEnumLabelNameMap() {
         return ENUM_LABEL_NAME_MAP;
     }
 
@@ -45,8 +45,8 @@ public class MiscController {
     }
 
     @SuppressWarnings("unchecked")
-    private static EnumLabelNameMap buildEnumLabelNameMap() {
-        EnumLabelNameMap resultMap = new EnumLabelNameMap();
+    private static EnumMetaMap buildEnumLabelNameMap() {
+        EnumMetaMap resultMap = new EnumMetaMap();
 
         Filter<Class<?>> filter = clazz -> clazz.isEnum() && (EnumConst.class.isAssignableFrom(clazz)) &&
                 !JooqUtil.ENUM_DICT_MAP_BLACK_LIST.contains(clazz);
@@ -54,15 +54,18 @@ public class MiscController {
 
         for (Class<?> clazz : enumClasses) {
             Class<? extends Enum<?>> enumClazz = (Class<? extends Enum<?>>) clazz;
-            Map<String, Object> result = MiscUtil.getNameFieldMap(enumClazz, "name");
-            assert result != null;
+            Map<String, String> nameToLabelMap = MiscUtil.getNameFieldMap(enumClazz, "label");
+            Map<String, Integer> nameToIdMap = MiscUtil.getNameFieldMap(enumClazz, "id");
+            assert nameToLabelMap != null;
+            assert nameToIdMap != null;
 
-            List<EnumLabelNameMap.Entry> labelNameMapEntries = result.entrySet()
-                    .stream().map(entry -> EnumLabelNameMap.Entry.builder()
-                            .label(entry.getKey())
-                            .name((String) entry.getValue()).build())
+            List<EnumMetaMap.Entry> enumMetaMapEntries = nameToLabelMap.entrySet()
+                    .stream().map(entry -> EnumMetaMap.Entry.builder()
+                            .name(entry.getKey())
+                            .label(entry.getValue())
+                            .id(nameToIdMap.get(entry.getKey())).build())
                     .collect(Collectors.toList());
-            resultMap.put(clazz.getSimpleName(), labelNameMapEntries);
+            resultMap.put(clazz.getSimpleName(), enumMetaMapEntries);
         }
 
         return resultMap;
@@ -73,7 +76,7 @@ public class MiscController {
 
         EnumUtil.getEnumMap(Country.class).forEach((key, value) ->
                 resultList.add(SelectOption.builder()
-                        .label(value.getChsName()).value(value.getAlpha2()).build()));
+                        .label(value.getLabel()).value(value.getAlpha2()).build()));
 
         return resultList;
     }

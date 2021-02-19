@@ -80,14 +80,15 @@ public class MiscUtil {
                 .toLowerCase().replaceAll("\\.", ":");
     }
 
-    public static Map<String, Object> getNameFieldMap(Class<? extends Enum<?>> clazz, String fieldName) {
+    public static <T> Map<String, T> getNameFieldMap(Class<? extends Enum<?>> clazz, String fieldName) {
         final Enum<?>[] enums = clazz.getEnumConstants();
         if (null == enums) {
             return null;
         }
-        final Map<String, Object> map = new LinkedHashMap<>(enums.length);
+        final Map<String, T> map = new LinkedHashMap<>(enums.length);
         for (Enum<?> e : enums) {
-            map.put(e.name(), ReflectUtil.getFieldValue(e, fieldName));
+            //noinspection unchecked
+            map.put(e.name(), (T) ReflectUtil.getFieldValue(e, fieldName));
         }
         return map;
     }

@@ -78,7 +78,7 @@ public class EnumConstHelper<E extends Enum<E> & EnumConst<E, ID>, ID> {
     }
 
     /**
-     * Finds enum {@link E} by name using its {@link EnumConst#getName()}
+     * Finds enum {@link E} by name using its {@link EnumConst#getLabel()}
      * method.
      *
      * @param name a name to search by
@@ -86,11 +86,11 @@ public class EnumConstHelper<E extends Enum<E> & EnumConst<E, ID>, ID> {
      * {@link NoSuchElementException} if there's no constant for given {@code name}
      */
     public E byName(String name) {
-        return byFilter(elem -> elem.getName().equals(name));
+        return byFilter(elem -> elem.getLabel().equals(name));
     }
 
     /**
-     * Finds enum {@link E} by name using its {@link EnumConst#getName()}
+     * Finds enum {@link E} by name using its {@link EnumConst#getLabel()}
      * method. If one is not found - returns a default value.
      *
      * @param name         a name to search by
@@ -100,11 +100,11 @@ public class EnumConstHelper<E extends Enum<E> & EnumConst<E, ID>, ID> {
      * otherwise
      */
     public E byNameOrDefault(String name, E defaultValue) {
-        return byFilterOrDefault(elem -> elem.getName().equals(name), defaultValue);
+        return byFilterOrDefault(elem -> elem.getLabel().equals(name), defaultValue);
     }
 
     /**
-     * Finds enum {@link E} by name using its {@link EnumConst#getName()}
+     * Finds enum {@link E} by name using its {@link EnumConst#getLabel()}
      * method. If one is not found - will throw an exception provided by the passed
      * {@code exceptionSupplier}.
      *
@@ -119,7 +119,7 @@ public class EnumConstHelper<E extends Enum<E> & EnumConst<E, ID>, ID> {
     public <X extends Throwable> E byNameOrThrow(
             String name,
             Supplier<? extends X> exceptionSupplier) throws X {
-        return byFilterOrThrow(elem -> elem.getName().equals(name), exceptionSupplier);
+        return byFilterOrThrow(elem -> elem.getLabel().equals(name), exceptionSupplier);
     }
 
 

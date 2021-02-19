@@ -18,11 +18,11 @@ public enum Gender implements EnumConst<Gender, Integer> {
 
     public static final EnumConstHelper<Gender, Integer> HELPER = EnumConstHelper.of(Gender.class);
     private final Integer id;
-    private final String name;
+    private final String label;
 
-    Gender(Integer id, String name) {
+    Gender(Integer id, String label) {
         this.id = id;
-        this.name = name;
+        this.label = label;
     }
 
     @Override
@@ -31,8 +31,8 @@ public enum Gender implements EnumConst<Gender, Integer> {
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getLabel() {
+        return label;
     }
 
     @SuppressWarnings("unused")
