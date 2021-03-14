@@ -1,6 +1,7 @@
 package com.silentcloud.springrest.web.shiro.intercepter;
 
 import com.silentcloud.springrest.web.shiro.authz.annotation.RequiresPerm;
+import com.silentcloud.springrest.web.shiro.authz.annotation.RequiresPermViewDetail;
 import com.silentcloud.springrest.web.shiro.authz.annotation.RequiresPermViewList;
 import com.silentcloud.springrest.web.shiro.authz.aop.CustomPermissionAnnotationMethodInterceptor;
 import org.apache.shiro.authz.annotation.*;
@@ -23,7 +24,8 @@ public class CustomAuthorizationAttributeSourceAdvisor extends AuthorizationAttr
                     RequiresRoles.class,
                     RequiresPermissions.class,
                     RequiresPerm.class,
-                    RequiresPermViewList.class
+                    RequiresPermViewList.class,
+                    RequiresPermViewDetail.class
             };
 
     public CustomAuthorizationAttributeSourceAdvisor() {
