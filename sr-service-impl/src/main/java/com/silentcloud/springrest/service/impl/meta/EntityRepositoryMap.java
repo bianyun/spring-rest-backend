@@ -13,6 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * 实体 Repository Map
+ *
+ * @author bianyun
+ */
 @Slf4j
 @SuppressWarnings("unchecked")
 public final class EntityRepositoryMap {

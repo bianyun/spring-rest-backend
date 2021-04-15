@@ -18,6 +18,11 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * 自定义 Authorizer
+ *
+ * @author bianyun
+ */
 @Component("authorizer")
 public class UserRealm extends AuthorizingRealm {
     private final UserService userService;

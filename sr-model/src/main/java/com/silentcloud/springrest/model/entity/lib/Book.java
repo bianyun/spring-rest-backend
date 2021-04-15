@@ -9,6 +9,11 @@ import javax.persistence.*;
 import java.time.YearMonth;
 import java.util.List;
 
+/**
+ * 图书
+ *
+ * @author bianyun
+ */
 @Entity
 @Table(name = "lib_book")
 @Data
@@ -23,8 +28,6 @@ public class Book extends AbstractAuditableEntity {
     private String title;
 
     private Long wordCount;
-
-//    private MonetaryAmount unitPrice;
 
     private Long unitPrice;
 

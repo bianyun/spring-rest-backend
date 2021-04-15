@@ -15,6 +15,11 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 
 
+/**
+ * 基础公共父类DTO
+ *
+ * @author bianyun
+ */
 @Data
 @NoArgsConstructor
 public class BaseDto<ID extends Serializable, Entity extends Persistable<ID>> {

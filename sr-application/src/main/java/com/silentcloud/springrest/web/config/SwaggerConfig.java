@@ -36,6 +36,11 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.function.Predicate;
 
+/**
+ * Swagger 配置
+ *
+ * @author bianyun
+ */
 @Configuration
 @ConditionalOnProperty("knife4j.enable")
 @EnableSwagger2WebMvc

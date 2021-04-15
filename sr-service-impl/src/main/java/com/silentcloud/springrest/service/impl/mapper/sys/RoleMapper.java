@@ -7,10 +7,21 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@SuppressWarnings({"SpringJavaAutowiredMembersInspection", "RedundantSuppression"})
+/**
+ * 角色 Mapper
+ *
+ * @author bianyun
+ */
+@SuppressWarnings({
+        "SpringJavaAutowiredMembersInspection",
+        "RedundantSuppression",
+        "AlibabaAbstractClassShouldStartWithAbstractNaming",
+        "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"
+})
 @Mapper
 public abstract class RoleMapper implements BaseMapper<Long, Role, RoleDto> {
 
+    @Override
     public abstract RoleDto entityToDto(Role entity);
 
     @Mapping(target = "lastModifiedTime", ignore = true)

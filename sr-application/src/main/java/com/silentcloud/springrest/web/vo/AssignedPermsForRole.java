@@ -6,6 +6,11 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
+/**
+ * 角色已分配的权限VO
+ *
+ * @author bianyun
+ */
 @Data
 public class AssignedPermsForRole {
 

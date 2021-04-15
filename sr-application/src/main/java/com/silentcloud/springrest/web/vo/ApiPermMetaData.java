@@ -7,6 +7,11 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * 接口权限元数据
+ *
+ * @author bianyun
+ */
 @ApiModel("接口权限元数据")
 @Data
 public class ApiPermMetaData {

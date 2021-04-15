@@ -1,5 +1,10 @@
 package com.silentcloud.springrest.service.api.common;
 
+/**
+ * 密码编码器
+ *
+ * @author bianyun
+ */
 public interface PasswordEncoder {
 
     /**

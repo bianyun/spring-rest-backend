@@ -20,6 +20,11 @@ import java.util.stream.Collectors;
 
 import static com.silentcloud.springrest.web.util.Consts.APP_ROOT_PACKAGE_NAME;
 
+/**
+ * 杂项接口
+ *
+ * @author bianyun
+ */
 @Api(tags = "杂项接口")
 @ApiSupport(order = 4)
 @RequestMapping("/sys/misc")

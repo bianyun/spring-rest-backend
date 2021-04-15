@@ -19,6 +19,11 @@ import java.util.Set;
 
 import static com.silentcloud.springrest.service.impl.util.JpaUtil.getLegalPropNamesCanBeUsedInJpaQueryExpr;
 
+/**
+ * 实体元数据
+ *
+ * @author bianyun
+ */
 @Data
 public class EntityMetaData<ID extends Serializable, DTO extends BaseDto<ID, Entity>,
         Entity extends Persistable<ID>> implements Serializable {

@@ -10,6 +10,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+/**
+ * JPA审计配置
+ *
+ * @author bianyun
+ */
 @Configuration
 @EnableJpaAuditing
 public class JpaAuditConfig {

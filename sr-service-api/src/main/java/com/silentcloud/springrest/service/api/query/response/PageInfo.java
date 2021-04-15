@@ -11,6 +11,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * 分页对象
+ *
+ * @author bianyun
+ */
 @Value(staticConstructor = "of")
 public class PageInfo<E> implements Serializable {
     private static final long serialVersionUID = 5066619052922125191L;

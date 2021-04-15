@@ -8,6 +8,11 @@ import java.lang.annotation.Target;
 import static com.silentcloud.springrest.web.util.Consts.API_PERM_PREFIX;
 import static com.silentcloud.springrest.web.util.Consts.PLACEHOLDER_LABEL;
 
+/**
+ * 自定义权限注解（快捷配置：查看列表）
+ *
+ * @author bianyun
+ */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @RequiresPerm(name = "查看" + PLACEHOLDER_LABEL + "列表", value = API_PERM_PREFIX + "view-list")

@@ -22,6 +22,11 @@ import static com.silentcloud.springrest.jooq.gen.Tables.*;
 import static com.silentcloud.springrest.service.impl.util.JooqUtil.GROUP_FIELDS_SEPARATOR;
 import static org.jooq.impl.DSL.groupConcat;
 
+/**
+ * 图书服务实现
+ *
+ * @author bianyun
+ */
 @Service
 @Transactional(readOnly = true)
 public class BookServiceImpl extends AbstractBaseService<Long, Book, BookDto> implements BookService {

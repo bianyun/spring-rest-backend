@@ -11,6 +11,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 
+/**
+ * 标签工具
+ *
+ * @author bianyun
+ */
 @UtilityClass
 public class LabelUtil {
     private final boolean useConjunctionBetweenClassAndField = true;

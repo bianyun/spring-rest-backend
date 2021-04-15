@@ -11,7 +11,17 @@ import org.mapstruct.MappingTarget;
 import static com.silentcloud.springrest.service.impl.util.JpaUtil.getReferencedEntities;
 import static com.silentcloud.springrest.service.impl.util.JpaUtil.getReferencedEntity;
 
-@SuppressWarnings({"SpringJavaAutowiredMembersInspection", "RedundantSuppression"})
+/**
+ * 图书 Mapper
+ *
+ * @author bianyun
+ */
+@SuppressWarnings({
+        "SpringJavaAutowiredMembersInspection",
+        "RedundantSuppression",
+        "AlibabaAbstractClassShouldStartWithAbstractNaming",
+        "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"
+})
 @Mapper
 public abstract class BookMapper implements BaseMapper<Long, Book, BookDto> {
 

@@ -11,6 +11,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * （一般对应于 Entity中 带有 @Column(unqiue = true) 注解的属性）
  * <p>
  * 注： 此注解用在DTO对象的属性上，只对部分基本类型(String, Integer, Long)的属性做唯一性校验，其它类型会被忽略
+ *
+ * @author bianyun
  */
 @Target(FIELD)
 @Retention(RUNTIME)

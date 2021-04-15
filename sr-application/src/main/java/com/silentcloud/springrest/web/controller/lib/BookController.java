@@ -12,6 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 图书管理
+ *
+ * @author bianyun
+ */
 @Api(tags = "图书管理")
 @ApiSupport(order = 4)
 @RequestMapping("/lib/books")

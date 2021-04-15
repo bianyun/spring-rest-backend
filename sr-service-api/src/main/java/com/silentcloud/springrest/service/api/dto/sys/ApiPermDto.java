@@ -13,6 +13,11 @@ import lombok.EqualsAndHashCode;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
+/**
+ * 接口权限 DTO
+ *
+ * @author bianyun
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel("接口权限")

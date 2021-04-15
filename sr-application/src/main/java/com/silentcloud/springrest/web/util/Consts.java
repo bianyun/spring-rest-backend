@@ -2,8 +2,17 @@ package com.silentcloud.springrest.web.util;
 
 import cn.hutool.core.util.StrUtil;
 import com.silentcloud.springrest.SpringrestApplication;
+import com.silentcloud.springrest.util.MiscUtil;
 
-public abstract class Consts {
+/**
+ * Web层常量类
+ *
+ * @author bianyun
+ */
+public final class Consts {
+    private Consts() {
+        MiscUtil.deliberatelyProhibitInstantiation();
+    }
 
     public static final String PLACEHOLDER_DOMAIN = "{domain}";
 

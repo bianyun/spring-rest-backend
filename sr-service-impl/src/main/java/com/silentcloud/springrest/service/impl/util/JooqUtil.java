@@ -9,6 +9,11 @@ import org.jooq.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Jooq工具类
+ *
+ * @author bianyun
+ */
 @UtilityClass
 public class JooqUtil {
     public static final String DELIMETER_BETWEEN_TABLE_AND_COLUMN = "__";

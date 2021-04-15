@@ -4,6 +4,11 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * 分页查询参数
+ * 
+ * @author bianyun
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class PageQueryParam extends QueryParam {

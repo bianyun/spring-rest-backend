@@ -24,7 +24,11 @@ import java.util.stream.Collectors;
 
 import static com.silentcloud.springrest.model.entity.LogicallyDeletable.DELETED_PROPERTY_NAME;
 
-
+/**
+ * JPA查询服务实现
+ *
+ * @author bianyun
+ */
 @SuppressWarnings("unchecked")
 @Service
 @Transactional(readOnly = true)

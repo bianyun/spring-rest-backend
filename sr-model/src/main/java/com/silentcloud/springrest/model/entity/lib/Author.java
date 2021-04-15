@@ -13,6 +13,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.List;
 
+/**
+ * 作者
+ *
+ * @author bianyun
+ */
 @Entity
 @Table(name = "lib_author")
 @Data

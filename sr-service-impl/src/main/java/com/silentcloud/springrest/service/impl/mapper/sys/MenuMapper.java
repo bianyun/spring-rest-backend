@@ -11,7 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Set;
 
-@SuppressWarnings({"SpringJavaAutowiredMembersInspection", "RedundantSuppression"})
+/**
+ * 菜单权限 Mapper
+ *
+ * @author bianyun
+ */
+@SuppressWarnings({
+        "SpringJavaAutowiredMembersInspection",
+        "RedundantSuppression",
+        "AlibabaAbstractClassShouldStartWithAbstractNaming",
+        "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"
+})
 @Mapper
 public abstract class MenuMapper {
 

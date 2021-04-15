@@ -7,6 +7,13 @@ import com.silentcloud.springrest.model.enums.base.helper.EnumConstHelper;
 
 import javax.persistence.Converter;
 
+/**
+ * 枚举类 - 性别
+ *
+ * @author bianyun
+ */
+
+@SuppressWarnings("AlibabaEnumConstantsMustHaveComment")
 public enum Gender implements EnumConst<Gender, Integer> {
 
     MALE(1, "男"),

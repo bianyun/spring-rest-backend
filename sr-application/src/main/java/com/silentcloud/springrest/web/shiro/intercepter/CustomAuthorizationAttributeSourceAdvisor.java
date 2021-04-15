@@ -13,6 +13,11 @@ import org.springframework.core.annotation.AnnotationUtils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+/**
+ * 自定义 AuthorizationAttributeSourceAdvisor
+ *
+ * @author bianyun
+ */
 @SuppressWarnings("unchecked")
 public class CustomAuthorizationAttributeSourceAdvisor extends AuthorizationAttributeSourceAdvisor {
 

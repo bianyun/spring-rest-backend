@@ -10,7 +10,17 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@SuppressWarnings({"SpringJavaAutowiredMembersInspection", "RedundantSuppression"})
+/**
+ * 用户 Mapper
+ *
+ * @author bianyun
+ */
+@SuppressWarnings({
+        "SpringJavaAutowiredMembersInspection",
+        "RedundantSuppression",
+        "AlibabaAbstractClassShouldStartWithAbstractNaming",
+        "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"
+})
 @Mapper
 public abstract class UserMapper implements BaseMapper<Long, User, UserDto> {
 

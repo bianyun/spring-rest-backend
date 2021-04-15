@@ -16,6 +16,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * JOOQ代码生成器
+ *
+ * @author bianyun
+ */
 public class JooqCodeGenerator {
     private static final String JOOQ_CODEGEN_MODULE_NAME = "sr-jooq";
     private static final String JOOQ_CODEGEN_DATABASE_NAME = JPADatabase.class.getName();

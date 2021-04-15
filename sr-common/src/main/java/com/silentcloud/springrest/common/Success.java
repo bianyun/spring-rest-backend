@@ -4,6 +4,11 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * 用户登录成功响应
+ *
+ * @author bianyun
+ */
 @Data
 public class Success {
     private LocalDateTime timestamp = LocalDateTime.now();

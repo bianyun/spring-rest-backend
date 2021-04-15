@@ -13,6 +13,11 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 菜单 DTO
+ *
+ * @author bianyun
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel("菜单")

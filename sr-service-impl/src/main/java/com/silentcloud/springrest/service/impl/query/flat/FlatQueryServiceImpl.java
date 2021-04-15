@@ -26,6 +26,11 @@ import java.util.stream.IntStream;
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.name;
 
+/**
+ * 扁平查询服务实现
+ *
+ * @author bianyun
+ */
 @SuppressWarnings("unused")
 @Service
 public class FlatQueryServiceImpl extends AbstractQueryService implements FlatQueryService {

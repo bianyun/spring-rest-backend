@@ -22,6 +22,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * 菜单权限服务实现
+ *
+ * @author bianyun
+ */
 @Service
 @Transactional(readOnly = true)
 public class MenuServiceImpl implements MenuService {
@@ -50,14 +55,14 @@ public class MenuServiceImpl implements MenuService {
         return menuMapper.entityListToDtoList(menuRepository.findAll());
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void create(MenuDto dto) {
         Menu savedEntity = menuRepository.save(menuMapper.dtoToEntity(dto));
         menuMapper.entityToDto(savedEntity);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateById(Long id, MenuDto dto) {
         Menu entity = menuRepository.getOne(id);
@@ -66,7 +71,7 @@ public class MenuServiceImpl implements MenuService {
         menuRepository.save(entity);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteById(Long id) {
         menuRepository.deleteById(id);
@@ -98,7 +103,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Map<String, Set<String>> getMenuToApiPermValuesMap() {
         List<Menu> allMenus = menuRepository.findAll();
-        Map<String, Set<String>> resultMap = new HashMap<>();
+        Map<String, Set<String>> resultMap = new HashMap<>(16);
         allMenus.forEach(menu -> {
             String menuPermValue = menu.getValue();
             Set<String> apiPermValueSet = menu.getApiPerms().stream()
@@ -109,7 +114,7 @@ public class MenuServiceImpl implements MenuService {
         return resultMap;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void linkApiPermsToMenu(String menuPermValue, Set<String> apiPermValueSet) {
         Menu menu = menuRepository.findByValue(menuPermValue);

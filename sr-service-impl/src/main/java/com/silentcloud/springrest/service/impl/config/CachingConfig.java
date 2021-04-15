@@ -12,6 +12,11 @@ import org.springframework.util.ClassUtils;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * 缓存配置
+ *
+ * @author bianyun
+ */
 @Configuration
 @EnableCaching
 public class CachingConfig {

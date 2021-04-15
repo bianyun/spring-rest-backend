@@ -15,6 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+/**
+ * 杂项工具
+ *
+ * @author bianyun
+ */
 @UtilityClass
 public class MiscUtil {
 
@@ -95,6 +100,10 @@ public class MiscUtil {
 
     public static <T> T unreachableButCompilerNeedsThis() {
         throw new AssertionError("this code should never be reached");
+    }
+
+    public static void deliberatelyProhibitInstantiation() {
+        throw new AssertionError("deliberately prohibit instantiation");
     }
 
     private int resolveGenericParamIndex(ParameterizedType parameterizedType, String genericTypeParamName) {

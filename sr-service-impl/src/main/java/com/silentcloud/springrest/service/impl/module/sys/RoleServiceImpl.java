@@ -27,6 +27,11 @@ import java.util.stream.Collectors;
 
 import static com.silentcloud.springrest.jooq.gen.Tables.SYS_ROLE;
 
+/**
+ * 角色服务实现
+ *
+ * @author bianyun
+ */
 @SuppressWarnings({"FieldCanBeLocal", "unused"})
 @Service
 @Transactional(readOnly = true)
@@ -73,7 +78,7 @@ public class RoleServiceImpl extends AbstractBaseService<Long, Role, RoleDto> im
         return buttonMapper.entitySetToDtoSet(role.getButtons());
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void assignPerms(Long roleId, Set<String> menuPermValueSet, Set<String> btnPermValueSet) {
         Role role = roleRepository.getOne(roleId);

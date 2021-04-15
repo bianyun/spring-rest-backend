@@ -20,6 +20,11 @@ import java.util.*;
 
 import static com.silentcloud.springrest.jooq.gen.Tables.SYS_BUTTON;
 
+/**
+ * 按钮权限服务实现
+ *
+ * @author bianyun
+ */
 @Service
 @Transactional(readOnly = true)
 public class ButtonServiceImpl extends AbstractBaseService<Long, Button, ButtonDto> implements ButtonService {
@@ -47,7 +52,7 @@ public class ButtonServiceImpl extends AbstractBaseService<Long, Button, ButtonD
 
     @Override
     public Map<String, List<ButtonDto>> getMenuToButtonPermsMap() {
-        Map<String, List<ButtonDto>> resultMap = new HashMap<>();
+        Map<String, List<ButtonDto>> resultMap = new HashMap<>(16);
 
         List<Button> buttons = buttonRepository.findAllByOrderByShowOrder();
         buttons.forEach(button -> {

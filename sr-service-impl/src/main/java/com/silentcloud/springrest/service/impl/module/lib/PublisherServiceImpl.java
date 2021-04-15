@@ -15,6 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.silentcloud.springrest.jooq.gen.Tables.LIB_PUBLISHER;
 
+/**
+ * 出版社服务实现
+ *
+ * @author bianyun
+ */
 @SuppressWarnings({"FieldCanBeLocal", "unused"})
 @Service
 @Transactional(readOnly = true)

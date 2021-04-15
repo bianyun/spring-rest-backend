@@ -10,6 +10,11 @@ import java.io.Serializable;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+/**
+ * 避免循环映射上下文
+ *
+ * @author bianyun
+ */
 public abstract class AbstractCycleAvoidingMappingContext<ID extends Serializable,
         Entity extends Persistable<ID>, DTO extends BaseDto<ID, Entity>> {
 

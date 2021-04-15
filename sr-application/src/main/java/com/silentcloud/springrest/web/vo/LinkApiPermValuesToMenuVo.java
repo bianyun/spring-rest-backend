@@ -7,6 +7,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
+/**
+ * 菜单关联接口权限集合VO
+ *
+ * @author bianyun
+ */
 @Data
 public class LinkApiPermValuesToMenuVo {
 

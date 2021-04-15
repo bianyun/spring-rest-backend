@@ -12,6 +12,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
+/**
+ * 出版社
+ *
+ * @author bianyun
+ */
 @Entity
 @Table(name = "lib_publisher")
 @Data

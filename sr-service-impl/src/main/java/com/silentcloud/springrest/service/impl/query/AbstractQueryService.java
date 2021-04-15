@@ -12,6 +12,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+/**
+ * 查询服务实现抽象父类
+ *
+ * @author bianyun
+ */
 public abstract class AbstractQueryService implements QueryService {
 
     protected List<SortOrderField> parseSortExpression(QueryParam queryParam, Set<String> legalFieldNames) {
@@ -49,9 +54,9 @@ public abstract class AbstractQueryService implements QueryService {
                 // order keyword specified, parse it
                 String order = fieldParts[1];
 
-                if (order.equalsIgnoreCase("asc")) {
+                if ("asc".equalsIgnoreCase(order)) {
                     sortOrderField = SortOrderField.of(fieldName, Sort.Direction.ASC);
-                } else if (order.equalsIgnoreCase("desc")) {
+                } else if ("desc".equalsIgnoreCase(order)) {
                     sortOrderField = SortOrderField.of(fieldName, Sort.Direction.DESC);
                 } else {
                     throw illegalSortExpression("查询排序表达式不合法: 非法的排序顺序关键字[{}]", order);

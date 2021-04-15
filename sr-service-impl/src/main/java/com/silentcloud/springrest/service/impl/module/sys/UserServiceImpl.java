@@ -27,6 +27,11 @@ import static com.silentcloud.springrest.jooq.gen.Tables.*;
 import static com.silentcloud.springrest.service.impl.util.JooqUtil.GROUP_FIELDS_SEPARATOR;
 import static org.jooq.impl.DSL.groupConcat;
 
+/**
+ * 用户服务实现
+ *
+ * @author bianyun
+ */
 @SuppressWarnings({"FieldCanBeLocal", "unused"})
 @Slf4j
 @Service
@@ -110,7 +115,7 @@ public class UserServiceImpl extends AbstractBaseService<Long, User, UserDto> im
         return passwordEncoder.matches(plainPassword, user.getPassword());
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void setPasswordById(Long id, String plainPassword) {
         User user = userRepository.getOne(id);
@@ -119,7 +124,7 @@ public class UserServiceImpl extends AbstractBaseService<Long, User, UserDto> im
         userRepository.save(user);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void resetPasswordById(Long id) {
         setPasswordById(id, UserDto.DEFAULT_PASSWORD);
@@ -157,7 +162,7 @@ public class UserServiceImpl extends AbstractBaseService<Long, User, UserDto> im
                 .flatMap(Set::stream).map(buttonMapper::entityToDto).collect(Collectors.toSet());
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveRoleIdsByUserId(Long id, Set<Long> roleIds) {
         User user = userRepository.getOne(id);

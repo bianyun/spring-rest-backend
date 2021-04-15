@@ -12,6 +12,11 @@ import lombok.EqualsAndHashCode;
 import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
+/**
+ * 按钮权限 DTO
+ *
+ * @author bianyun
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ApiModel("按钮权限")

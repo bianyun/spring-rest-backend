@@ -10,7 +10,7 @@ import com.silentcloud.springrest.jooq.gen.tables.*;
 /**
  * Convenience access to all tables in the default schema.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public class Tables {
 
     /**

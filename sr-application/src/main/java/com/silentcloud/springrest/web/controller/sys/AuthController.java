@@ -17,6 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+/**
+ * 登录管理
+ *
+ * @author bianyun
+ */
 @Api(tags = "登录管理")
 @ApiSupport(order = 0)
 @RestController

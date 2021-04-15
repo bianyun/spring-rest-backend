@@ -6,6 +6,11 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
+/**
+ * Bean工具组件（用于从Spring上下文根据 Class 直接获取 Bean）
+ *
+ * @author bianyun
+ */
 @Component
 public class BeanUtil implements ApplicationContextAware {
 

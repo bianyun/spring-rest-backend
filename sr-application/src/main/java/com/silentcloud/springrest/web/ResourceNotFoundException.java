@@ -3,7 +3,12 @@ package com.silentcloud.springrest.web;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.http.HttpStatus;
 
-public class ResourceNotFoundException extends CustomWebLayerException {
+/**
+ * 资源不存在异常
+ *
+ * @author bianyun
+ */
+public class ResourceNotFoundException extends AbstractWebLayerException {
     private static final long serialVersionUID = 5136474288616839120L;
 
     private static final HttpStatus HTTP_STATUS = HttpStatus.NOT_FOUND;

@@ -9,6 +9,8 @@ import java.lang.reflect.Type;
 
 /**
  * A base {@link AttributeConverter} to be implemented by enum converters.
+ *
+ * @author bianyun
  */
 public class BaseEnumConstAttributeConverter<E extends Enum<E> & EnumConst<E, ID>, ID>
         implements AttributeConverter<E, ID> {

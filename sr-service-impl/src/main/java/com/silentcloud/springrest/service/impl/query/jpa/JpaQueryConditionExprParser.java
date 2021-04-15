@@ -5,11 +5,20 @@ import com.github.wenhao.jpa.Specifications;
 import com.silentcloud.springrest.service.api.query.IllegalQueryExprException.ErrorType;
 import com.silentcloud.springrest.service.impl.query.AbstractQueryConditionExprParser;
 import com.silentcloud.springrest.service.impl.query.antlr.gen.QueryExpressionParser;
+import com.silentcloud.springrest.util.MiscUtil;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Set;
 
+import static com.silentcloud.springrest.util.StrUtils.CLOSING_PARENTHESIS;
+import static com.silentcloud.springrest.util.StrUtils.OPENING_PARENTHESIS;
+
+/**
+ * JPA查询条件表达式解析器
+ *
+ * @author bianyun
+ */
 public class JpaQueryConditionExprParser<T extends Persistable<?>> extends AbstractQueryConditionExprParser<Specification<T>> {
 
     public JpaQueryConditionExprParser(Set<String> legalFieldNames) {
@@ -27,10 +36,13 @@ public class JpaQueryConditionExprParser<T extends Persistable<?>> extends Abstr
                     return Specifications.<T>and().predicate(left).predicate(right).build();
                 case "||":
                     return Specifications.<T>or().predicate(left).predicate(right).build();
+                default:
+                    return MiscUtil.unreachableButCompilerNeedsThis();
             }
         }
 
-        if (ctx.start.getText().equals("(") && ctx.stop.getText().equals(")")) {
+        if (OPENING_PARENTHESIS.equals(ctx.start.getText()) &&
+                CLOSING_PARENTHESIS.equals(ctx.stop.getText())) {
             return visit(ctx.expr(0));
         }
 

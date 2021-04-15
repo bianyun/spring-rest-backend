@@ -6,6 +6,12 @@ import org.apache.shiro.aop.MethodInvocation;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.aop.AuthorizingAnnotationMethodInterceptor;
 
+
+/**
+ * 自定义权限注解方法拦截器
+ *
+ * @author bianyun
+ */
 public class CustomPermissionAnnotationMethodInterceptor extends AuthorizingAnnotationMethodInterceptor {
 
     public CustomPermissionAnnotationMethodInterceptor() {

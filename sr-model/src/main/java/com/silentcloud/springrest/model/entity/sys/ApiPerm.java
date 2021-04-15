@@ -11,6 +11,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 接口权限
+ *
+ * @author bianyun
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity

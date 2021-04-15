@@ -23,6 +23,11 @@ import java.util.stream.Collectors;
 import static com.silentcloud.springrest.web.util.Consts.API_PERM_PREFIX;
 import static com.silentcloud.springrest.web.util.Consts.SUBCLASS_API_OPERATION_ORDER_OFFSET;
 
+/**
+ * 角色管理
+ *
+ * @author bianyun
+ */
 @Api(tags = "角色管理")
 @ApiSupport(order = 2)
 @RequestMapping("/sys/roles")

@@ -16,6 +16,11 @@ import java.util.List;
 import static com.silentcloud.springrest.jooq.gen.Tables.SYS_BUTTON_API_PERM;
 import static com.silentcloud.springrest.jooq.gen.Tables.SYS_MENU_API_PERM;
 
+/**
+ * 接口权限服务实现
+ *
+ * @author bianyun
+ */
 @Service
 @Transactional(readOnly = true)
 public class ApiPermServiceImpl implements ApiPermService {
@@ -38,14 +43,14 @@ public class ApiPermServiceImpl implements ApiPermService {
         return apiPermMapper.entityListToDtoList(apiPermRepository.findAll());
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void create(ApiPermDto dto) {
         ApiPerm savedEntity = apiPermRepository.save(apiPermMapper.dtoToEntity(dto));
         apiPermMapper.entityToDto(savedEntity);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateById(Long id, ApiPermDto dto) {
         ApiPerm entity = apiPermRepository.getOne(id);
@@ -54,7 +59,7 @@ public class ApiPermServiceImpl implements ApiPermService {
         apiPermRepository.save(entity);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteById(Long id) {
         apiPermRepository.deleteById(id);
@@ -65,7 +70,7 @@ public class ApiPermServiceImpl implements ApiPermService {
         return apiPermMapper.entityToDto(apiPermRepository.findByValue(value));
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteApiPermsByValues(Collection<String> apiPermValues) {
         apiPermValues.forEach(value -> {

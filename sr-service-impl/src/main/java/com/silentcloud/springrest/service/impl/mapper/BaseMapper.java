@@ -9,7 +9,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"EmptyMethod", "unused"})
+/**
+ * 公共 Mapper接口
+ *
+ * @author bianyun
+ */
+@SuppressWarnings({
+        "EmptyMethod",
+        "unused",
+        "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"
+})
 public interface BaseMapper<ID extends Serializable, Entity extends Persistable<ID>, DTO extends BaseDto<ID, Entity>> {
 
     DTO entityToDto(Entity entity);

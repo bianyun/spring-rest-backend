@@ -14,6 +14,7 @@ import com.silentcloud.springrest.service.impl.meta.EntityMetaData;
 import com.silentcloud.springrest.service.impl.meta.EntityMetaDataMap;
 import com.silentcloud.springrest.service.impl.meta.EntityRepositoryMap;
 import com.silentcloud.springrest.util.LabelUtil;
+import com.silentcloud.springrest.util.MiscUtil;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.TableLike;
@@ -32,7 +33,11 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+/**
+ * JPA 工具类
+ *
+ * @author bianyun
+ */
 public final class JpaUtil {
     public static final String ENTITY_ID_PROPERTY_NAME = "id";
     private static final List<Class<?>> ELEMENTARY_CLASSES = Arrays.asList(String.class, Byte.class, Character.class,
@@ -40,7 +45,7 @@ public final class JpaUtil {
             LocalDate.class, LocalDateTime.class, LocalTime.class, Serializable.class);
 
     private JpaUtil() {
-        throw new AssertionError("deliberately prohibit instantiation");
+        MiscUtil.deliberatelyProhibitInstantiation();
     }
 
     public static <ID extends Serializable, Entity extends Persistable<ID>>

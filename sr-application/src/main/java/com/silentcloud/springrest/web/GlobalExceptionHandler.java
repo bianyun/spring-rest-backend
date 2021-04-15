@@ -5,7 +5,7 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.silentcloud.springrest.common.ErrorMsg;
-import com.silentcloud.springrest.service.api.CustomServiceLayerException;
+import com.silentcloud.springrest.service.api.AbstractServiceLayerException;
 import com.silentcloud.springrest.util.LabelUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
@@ -29,20 +29,27 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
+import static cn.hutool.core.util.StrUtil.DOT;
+import static com.silentcloud.springrest.util.StrUtils.OPENING_BRACKET;
 import static com.silentcloud.springrest.web.controller.sys.PermController.API_PERM_VALUE_NAME_MAP;
 
+/**
+ * 全局异常处理器
+ *
+ * @author bianyun
+ */
 @Slf4j
 @ControllerAdvice(annotations = RestController.class)
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String REGEX_API_PERM_UNAUTHORIZED_MSG = "User is not permitted \\[(\\S+)\\]";
 
-    @ExceptionHandler(CustomWebLayerException.class)
-    public ResponseEntity<Object> handleCustomWebLayerException(CustomWebLayerException ex) {
+    @ExceptionHandler(AbstractWebLayerException.class)
+    public ResponseEntity<Object> handleCustomWebLayerException(AbstractWebLayerException ex) {
         return new ResponseEntity<>(ex.getErrorMsg(), ex.getHttpStatus());
     }
 
-    @ExceptionHandler(CustomServiceLayerException.class)
-    public ResponseEntity<Object> handleCustomServiceLayerException(CustomServiceLayerException ex) {
+    @ExceptionHandler(AbstractServiceLayerException.class)
+    public ResponseEntity<Object> handleCustomServiceLayerException(AbstractServiceLayerException ex) {
         return new ResponseEntity<>(ex.getErrorMsg(), HttpStatus.valueOf(ex.getHttpStatusCode()));
     }
 
@@ -118,10 +125,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         if (firstFieldError != null) {
             String firstErrorFieldStr = firstFieldError.getField();
 
-            if (firstErrorFieldStr.contains(".")) {
-                Class<?> actualClassType = bindingResult.getFieldType(StrUtil.subBefore(firstErrorFieldStr, ".", true));
+            if (firstErrorFieldStr.contains(DOT)) {
+                Class<?> actualClassType = bindingResult.getFieldType(StrUtil.subBefore(firstErrorFieldStr, DOT, true));
                 if (actualClassType != null) {
-                    String fieldName = StrUtil.subBefore(StrUtil.subAfter(firstErrorFieldStr, ".", true), "[", true);
+                    String fieldName = StrUtil.subBefore(StrUtil.subAfter(firstErrorFieldStr, DOT, true), OPENING_BRACKET, true);
                     Field field = ReflectUtil.getField(actualClassType, fieldName);
                     Assert.notNull(field, "类{}中不存在字段{}", actualClassType.getName(), fieldName);
                     String fieldFullLabel = LabelUtil.getFieldFullLabel(actualClassType, field);

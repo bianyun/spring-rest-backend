@@ -53,12 +53,20 @@ import static com.silentcloud.springrest.model.entity.LogicallyDeletable.DELETED
 import static com.silentcloud.springrest.service.impl.config.CachingConfig.RUNTIME_CACHE_RESOLVER;
 import static com.silentcloud.springrest.util.MiscUtil.illegalArgumentException;
 
-
+/**
+ * 公共服务实现抽象父类
+ *
+ * @param <ID>     实体ID类型
+ * @param <Entity> 实体类型
+ * @param <DTO>    DTO类型
+ * @author bianyun
+ */
 @Transactional(readOnly = true)
 public abstract class AbstractBaseService<ID extends Serializable, Entity extends Persistable<ID>, DTO extends BaseDto<ID, Entity>>
         implements BaseService<ID, Entity, DTO> {
     private static final Collection<Class<?>> UNIQUE_CHECK_ATTR_ALLOWED_VALUE_TYPES = Arrays.asList(
             String.class, Integer.class, Long.class, int.class, long.class);
+    private static final String ATTRIBUTE_SUFFIX_ID = "Id";
 
     protected final DSLContext dsl;
     private final BaseRepository<ID, Entity> repository;
@@ -115,6 +123,11 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         return dsl.select();
     }
 
+    /**
+     * 构造Jooq查询的 Table对象（可能是单表，也可能是进行连接后的 Table对象）
+     *
+     * @return Table对象
+     */
     protected abstract Table<? extends Record> buildJoinedTable();
 
     protected SelectFinalStep<? extends Record> buildRemainingPartSql(SelectConditionStep<? extends Record> selectConditionStep) {
@@ -144,7 +157,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         return mapper.entityListToDtoList(entities);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public DTO create(DTO dto) {
         checkUniqueConstraints(dto);
@@ -154,7 +167,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
     }
 
     @CachePut(cacheResolver = RUNTIME_CACHE_RESOLVER, key = "#id")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public DTO updateById(ID id, DTO dto) {
         if (!Objects.equals(id, Objects.requireNonNull(dto.getId()))) {
@@ -172,7 +185,7 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
     }
 
     @CacheEvict(cacheResolver = RUNTIME_CACHE_RESOLVER, key = "#id")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteById(ID id) {
         Entity entity = repository.getOne(id);
@@ -198,14 +211,14 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void batchDeleteByIdSet(Set<ID> ids) {
-        Map<String, List<Object>> exceptionMap = new HashMap<>();
+        Map<String, List<Object>> exceptionMap = new HashMap<>(8);
         for (ID id : ids) {
             try {
                 deleteById(id);
-            } catch (CustomServiceLayerException e) {
+            } catch (AbstractServiceLayerException e) {
                 String errorMsg = e.getErrorMsg().getMessage();
                 exceptionMap.computeIfAbsent(errorMsg, k -> new ArrayList<>());
                 exceptionMap.get(errorMsg).add(id);
@@ -228,14 +241,14 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
     }
 
     @CacheEvict(cacheResolver = RUNTIME_CACHE_RESOLVER, key = "#id")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void activateById(ID id) {
         doActivatableOperation(id, true);
     }
 
     @CacheEvict(cacheResolver = RUNTIME_CACHE_RESOLVER, key = "#id")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deactivateById(ID id) {
         doActivatableOperation(id, false);
@@ -364,8 +377,8 @@ public abstract class AbstractBaseService<ID extends Serializable, Entity extend
             if (withInScopeFieldValue instanceof BaseDto) {
                 Object withInScopeObjId = ((BaseDto<?, ?>) withInScopeFieldValue).getId();
                 predicateBuilder.eq(withInScopeAttribute + ".id", withInScopeObjId);
-            } else if (withInScopeFieldValue instanceof Long && withInScopeAttribute.endsWith("Id")) {
-                predicateBuilder.eq(withInScopeAttribute.replace("Id", ".id"), withInScopeFieldValue);
+            } else if (withInScopeFieldValue instanceof Long && withInScopeAttribute.endsWith(ATTRIBUTE_SUFFIX_ID)) {
+                predicateBuilder.eq(withInScopeAttribute.replace(ATTRIBUTE_SUFFIX_ID, ".id"), withInScopeFieldValue);
             } else {
                 predicateBuilder.eq(withInScopeAttribute, withInScopeFieldValue);
             }

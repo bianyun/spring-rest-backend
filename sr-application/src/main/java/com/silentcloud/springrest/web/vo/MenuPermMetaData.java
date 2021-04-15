@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * 菜单权限元数据VO
+ *
+ * @author bianyun
+ */
 @ApiModel("菜单权限元数据")
 @Data
 public class MenuPermMetaData {

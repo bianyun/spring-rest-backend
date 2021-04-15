@@ -8,6 +8,11 @@ import lombok.Data;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 用户资料VO
+ *
+ * @author bianyun
+ */
 @Data
 @ApiModel("用户资料")
 public class UserProfile {

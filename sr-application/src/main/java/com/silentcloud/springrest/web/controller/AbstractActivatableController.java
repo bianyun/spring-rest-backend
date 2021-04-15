@@ -19,6 +19,14 @@ import java.io.Serializable;
 import static com.silentcloud.springrest.web.util.Consts.*;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
+/**
+ * 支持启用停用操作的公共 Controller（继承自 抽象公共Controller）
+ *
+ * @param <ID>     实体对象ID类型
+ * @param <Entity> 实体对象类型
+ * @param <DTO>    DTO类型
+ * @author bianyun
+ */
 public abstract class AbstractActivatableController<ID extends Serializable, Entity extends Persistable<ID>, DTO extends BaseDto<ID, Entity>>
         extends AbstractBaseController<ID, Entity, DTO> {
     private final BaseService<ID, Entity, DTO> service;

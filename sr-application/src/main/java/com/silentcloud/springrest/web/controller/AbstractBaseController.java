@@ -37,6 +37,14 @@ import static com.silentcloud.springrest.web.util.Consts.PLACEHOLDER_LABEL;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
+/**
+ * 抽象公共Controller
+ *
+ * @param <ID>     实体对象ID类型
+ * @param <Entity> 实体对象类型
+ * @param <DTO>    DTO类型
+ * @author bianyun
+ */
 @Validated
 public abstract class AbstractBaseController<ID extends Serializable,
         Entity extends Persistable<ID>, DTO extends BaseDto<ID, Entity>> {

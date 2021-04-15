@@ -38,6 +38,11 @@ import java.util.stream.Collectors;
 
 import static com.silentcloud.springrest.web.util.Consts.*;
 
+/**
+ * 权限管理
+ *
+ * @author bianyun
+ */
 @Api(tags = "权限管理")
 @ApiSupport(order = 3)
 @RequestMapping("/sys/perms")

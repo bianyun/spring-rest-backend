@@ -28,6 +28,11 @@ import java.util.Set;
 import static com.silentcloud.springrest.web.util.Consts.API_PERM_PREFIX;
 import static com.silentcloud.springrest.web.util.Consts.SUBCLASS_API_OPERATION_ORDER_OFFSET;
 
+/**
+ * 用户管理
+ *
+ * @author bianyun
+ */
 @Api(tags = "用户管理")
 @ApiSupport(order = 1)
 @RequestMapping("/sys/users")

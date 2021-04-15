@@ -16,7 +16,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"SpringJavaAutowiredMembersInspection", "RedundantSuppression"})
+/**
+ * 按钮权限 Mapper
+ *
+ * @author bianyun
+ */
+@SuppressWarnings({
+        "SpringJavaAutowiredMembersInspection",
+        "RedundantSuppression",
+        "AlibabaAbstractClassShouldStartWithAbstractNaming",
+        "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"
+})
 @Mapper
 public abstract class ButtonMapper implements BaseMapper<Long, Button, ButtonDto> {
 

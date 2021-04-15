@@ -1210,13 +1210,13 @@ public enum Country implements EnumConst<Country, Integer> {
 
 
     public static final EnumConstHelper<Country, Integer> HELPER = EnumConstHelper.of(Country.class);
-    private static final Map<String, Country> alpha3Map = new HashMap<>();
-    private static final Map<Integer, Country> numericMap = new HashMap<>();
+    private static final Map<String, Country> ALPHA_3_MAP = new HashMap<>();
+    private static final Map<Integer, Country> NUMERIC_MAP = new HashMap<>();
 
     static {
         for (Country cc : values()) {
-            alpha3Map.put(cc.getAlpha3(), cc);
-            numericMap.put(cc.getId(), cc);
+            ALPHA_3_MAP.put(cc.getAlpha3(), cc);
+            NUMERIC_MAP.put(cc.getId(), cc);
         }
     }
 
@@ -1237,6 +1237,7 @@ public enum Country implements EnumConst<Country, Integer> {
      *
      * @return The country name.
      */
+    @Override
     public String getLabel() {
         return label;
     }
@@ -1282,6 +1283,7 @@ public enum Country implements EnumConst<Country, Integer> {
      * @return The <a href="http://en.wikipedia.org/wiki/ISO_3166-1_numeric"
      * >ISO 3166-1 numeric</a> code.
      */
+    @Override
     public Integer getId() {
         return id;
     }
@@ -1323,7 +1325,7 @@ public enum Country implements EnumConst<Country, Integer> {
     }
 
     private static Country getByAlpha3Code(String code) {
-        return alpha3Map.get(code);
+        return ALPHA_3_MAP.get(code);
     }
 
 
@@ -1337,7 +1339,7 @@ public enum Country implements EnumConst<Country, Integer> {
      * @return A CountryCode instance, or null if not found.
      */
     public static Country getByCode(int code) {
-        return numericMap.get(code);
+        return NUMERIC_MAP.get(code);
     }
 
     @SuppressWarnings("unused")

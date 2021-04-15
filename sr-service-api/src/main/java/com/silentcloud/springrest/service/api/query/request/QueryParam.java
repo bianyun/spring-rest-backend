@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 /**
  * 查询参数
+ *
+ * @author bianyun
  */
 @Data
 public class QueryParam implements Serializable {

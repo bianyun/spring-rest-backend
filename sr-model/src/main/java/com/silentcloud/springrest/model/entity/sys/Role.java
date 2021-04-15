@@ -9,6 +9,11 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * 角色
+ *
+ * @author bianyun
+ */
 @Table(name = "sys_role")
 @Entity
 @Data

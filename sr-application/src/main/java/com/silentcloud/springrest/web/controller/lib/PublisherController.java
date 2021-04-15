@@ -23,6 +23,11 @@ import java.util.List;
 
 import static com.silentcloud.springrest.web.util.Consts.SUBCLASS_API_OPERATION_ORDER_OFFSET;
 
+/**
+ * 出版社管理
+ *
+ * @author bianyun
+ */
 @Api(tags = "出版社管理")
 @ApiSupport(order = 3)
 @RequestMapping("/lib/publishers")

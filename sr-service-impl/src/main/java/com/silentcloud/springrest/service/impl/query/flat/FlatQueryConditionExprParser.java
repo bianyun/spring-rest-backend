@@ -4,14 +4,22 @@ import cn.hutool.core.lang.Assert;
 import com.silentcloud.springrest.service.api.query.IllegalQueryExprException.ErrorType;
 import com.silentcloud.springrest.service.impl.query.AbstractQueryConditionExprParser;
 import com.silentcloud.springrest.service.impl.query.antlr.gen.QueryExpressionParser;
+import com.silentcloud.springrest.util.MiscUtil;
 import org.jooq.Condition;
 import org.jooq.Field;
 
 import java.util.Set;
 
+import static com.silentcloud.springrest.util.StrUtils.CLOSING_PARENTHESIS;
+import static com.silentcloud.springrest.util.StrUtils.OPENING_PARENTHESIS;
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.name;
 
+/**
+ * 扁平查询条件表达式解析器
+ *
+ * @author bianyun
+ */
 public class FlatQueryConditionExprParser extends AbstractQueryConditionExprParser<Condition> {
 
     public FlatQueryConditionExprParser(Set<String> legalFieldNames) {
@@ -28,10 +36,13 @@ public class FlatQueryConditionExprParser extends AbstractQueryConditionExprPars
                     return left.and(visit(ctx.expr(1)));
                 case "||":
                     return left.or(visit(ctx.expr(1)));
+                default:
+                    return MiscUtil.unreachableButCompilerNeedsThis();
             }
         }
 
-        if (ctx.start.getText().equals("(") && ctx.stop.getText().equals(")")) {
+        if (OPENING_PARENTHESIS.equals(ctx.start.getText()) &&
+                CLOSING_PARENTHESIS.equals(ctx.stop.getText())) {
             return visit(ctx.expr(0));
         }
 

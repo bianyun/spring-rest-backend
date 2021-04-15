@@ -6,6 +6,11 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.springframework.stereotype.Component;
 
+/**
+ * 密码匹配组件
+ *
+ * @author bianyun
+ */
 @Component
 public class PasswordMatcher implements CredentialsMatcher {
     private final PasswordEncoder passwordEncoder;

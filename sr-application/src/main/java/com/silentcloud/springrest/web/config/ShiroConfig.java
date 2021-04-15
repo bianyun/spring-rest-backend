@@ -11,6 +11,11 @@ import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreato
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Shiro 配置
+ *
+ * @author bianyun
+ */
 @Configuration
 public class ShiroConfig {
 

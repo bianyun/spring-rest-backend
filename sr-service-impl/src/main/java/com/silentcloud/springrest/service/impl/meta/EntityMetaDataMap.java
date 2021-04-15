@@ -7,9 +7,15 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 实体元数据Map
+ *
+ * @author bianyun
+ */
 public final class EntityMetaDataMap {
 
-    private static final Map<Class<?>, EntityMetaData<?, ? extends BaseDto<?, ?>, ? extends Persistable<?>>> map = new ConcurrentHashMap<>();
+    private static final
+    Map<Class<?>, EntityMetaData<?, ? extends BaseDto<?, ?>, ? extends Persistable<?>>> MAP = new ConcurrentHashMap<>();
 
     private EntityMetaDataMap() {
         throw new AssertionError("deliberately prohibit instantiation");
@@ -17,14 +23,14 @@ public final class EntityMetaDataMap {
 
     public static <ID extends Serializable, DTO extends BaseDto<ID, Entity>, Entity extends Persistable<ID>>
     void put(Class<?> dtoOrEntityClass, EntityMetaData<ID, DTO, Entity> entityMetaData) {
-        map.put(dtoOrEntityClass, entityMetaData);
+        MAP.put(dtoOrEntityClass, entityMetaData);
     }
 
     @SuppressWarnings("unchecked")
     public static <ID extends Serializable, DTO extends BaseDto<ID, Entity>, Entity extends Persistable<ID>>
     EntityMetaData<ID, DTO, Entity>
     get(Class<?> dtoOrEntityClass) {
-        return (EntityMetaData<ID, DTO, Entity>) map.get(dtoOrEntityClass);
+        return (EntityMetaData<ID, DTO, Entity>) MAP.get(dtoOrEntityClass);
     }
 
 }

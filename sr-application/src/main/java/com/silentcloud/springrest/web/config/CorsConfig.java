@@ -11,6 +11,11 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
+/**
+ * 跨域相关配置
+ *
+ * @author bianyun
+ */
 @Configuration
 public class CorsConfig {
     @Value("${cors.allowed-origins}")

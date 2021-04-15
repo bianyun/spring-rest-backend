@@ -4,6 +4,12 @@ import cn.hutool.crypto.digest.BCrypt;
 import com.silentcloud.springrest.service.api.common.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * 密码编码器（BCrypt算法）
+ *
+ * @author bianyun
+ */
+@SuppressWarnings("AlibabaClassNamingShouldBeCamel")
 @Service
 public class BCryptPasswordEncoder implements PasswordEncoder {
     private final static int DEFAULT_BCRYPT_LOG_ROUNDS = 10;

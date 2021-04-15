@@ -16,6 +16,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
+/**
+ * 可审计实体抽象父类
+ *
+ * @author bianyun
+ */
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 @Data
@@ -41,6 +46,7 @@ public abstract class AbstractAuditableEntity extends AbstractPersistable<Long> 
     @LastModifiedDate
     private LocalDateTime lastModifiedTime;
 
+    @Override
     public void setId(Long id) {
         super.setId(id);
     }

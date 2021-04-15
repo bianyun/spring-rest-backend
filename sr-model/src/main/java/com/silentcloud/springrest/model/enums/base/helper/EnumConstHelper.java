@@ -10,8 +10,13 @@ import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+/**
+ * An enum helper class
+ *
+ * @author bianyun
+ */
 public class EnumConstHelper<E extends Enum<E> & EnumConst<E, ID>, ID> {
-    private static final Map<Class<?>, EnumConstHelper<?, ?>> helperMap = new HashMap<>();
+    private static final Map<Class<?>, EnumConstHelper<?, ?>> HELPER_MAP = new HashMap<>();
 
     private final E[] enumConstants;
 
@@ -22,10 +27,10 @@ public class EnumConstHelper<E extends Enum<E> & EnumConst<E, ID>, ID> {
     @SuppressWarnings("unchecked")
     public static <E extends Enum<E> & EnumConst<E, ID>, ID>
     EnumConstHelper<E, ID> of(Class<E> actualEnumClass) {
-        EnumConstHelper<E, ID> result = (EnumConstHelper<E, ID>) helperMap.get(actualEnumClass);
+        EnumConstHelper<E, ID> result = (EnumConstHelper<E, ID>) HELPER_MAP.get(actualEnumClass);
         if (result == null) {
             result = new EnumConstHelper<>(actualEnumClass);
-            helperMap.put(actualEnumClass, result);
+            HELPER_MAP.put(actualEnumClass, result);
         }
 
         return result;

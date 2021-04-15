@@ -18,6 +18,11 @@ import java.util.List;
 
 import static com.silentcloud.springrest.service.api.dto.ValidationGroups.*;
 
+/**
+ * 图书 DTO
+ *
+ * @author bianyun
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ApiModel("图书")

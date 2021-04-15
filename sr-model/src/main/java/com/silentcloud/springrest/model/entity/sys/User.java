@@ -13,6 +13,11 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 用户
+ *
+ * @author bianyun
+ */
 @Table(name = "sys_user")
 @Entity
 @Data

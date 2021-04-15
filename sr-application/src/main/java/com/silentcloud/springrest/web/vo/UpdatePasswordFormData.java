@@ -5,6 +5,11 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
+/**
+ * 修改密码表单数据VO
+ *
+ * @author bianyun
+ */
 @Data
 public class UpdatePasswordFormData {
 

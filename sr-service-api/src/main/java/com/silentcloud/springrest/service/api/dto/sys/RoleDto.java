@@ -10,6 +10,11 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 
+/**
+ * 角色 DTO
+ *
+ * @author bianyun
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ApiModel("角色")

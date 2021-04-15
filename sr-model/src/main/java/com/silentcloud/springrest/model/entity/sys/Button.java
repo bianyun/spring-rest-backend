@@ -9,6 +9,11 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * 按钮权限
+ *
+ * @author bianyun
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
